@@ -1,0 +1,79 @@
+
+{% block head %}
+{% endblock head %}
+
+{% block IMPORTANT %}
+<h2 class="title">Main Task </h2> 
+{% endblock IMPORTANT %}
+
+{% block numimages%}
+<li><p>Reminder: You will complete steps 1-3 for each answer to 3 question-based images in this HIT.</p></li>
+{% endblock numimages %}
+
+{% block body %}
+
+
+        <form name='mturk_form' method='post' id='mturk_form' action='https://www.mturk.com/mturk/externalSubmit'><input type='hidden' value='' name='assignmentId' id='assignmentId'/>
+        
+            <div class="container">
+            <ul class="nav nav-tabs controlImg">
+                    <li class="active"><a href="#tab1" id="TAB1" data-toggle="tab" onClick="find_activated_tab(this.id)">Image 1</a></li>
+                    <li class="disabled"><a href="#tab2" data-toggle="tab" id="TAB2" onClick="find_activated_tab(this.id)">Image 2</a></li>
+                    <li class="disabled"><a href="#tab3" data-toggle="tab" id="TAB3" onClick="find_activated_tab(this.id)">Image 3</a></li>
+            </ul>
+
+
+                
+                    <!-------- main content ---------->
+                    <div class="row">
+                        
+                        <div class="box-wrapper" >
+                            <button type="button" id="answerbottonleft" class="btn btnNextAnswer glyphicon glyphicon-chevron-left"  onClick="previous_answer()" aria-hidden="true" ></button>
+                            <!-- <span id="answerbottonleft" onClick="previous_answer()" class="clickable-icon">&lt;</span> -->
+                            <p id = "answerindex" style="display:inline"></p>
+                            <!-- <span id="answerbottonright" onClick="next_answer()" class="clickable-icon">&gt;</span> -->
+                            <button type="button" id="answerbottonright"  class="btn btnNextAnswer glyphicon glyphicon-chevron-right"  onClick="next_answer()" aria-hidden="true" ></button>
+                        </div>
+                        <p id ="xycoorcommonAnswer"></p>
+
+
+                        
+
+
+                    </div>
+            <!-- end section 1-->
+
+                <div class="tab-content">
+                    <div class="tab-pane btndiv active" id="tab1">
+                        <button type="button" class="btn btnNext" id = "btnNext1">Next Image</button>
+                    </div>
+                    <div class="tab-pane btndiv" id="tab2">
+                        <button type="button" class="btn btnNext">Next Image</button>
+                        <button type="button" class="btn btnPrevious" >Previous Image</button>
+                    </div>
+                    <div class="tab-pane btndiv" id="tab3">
+                        <button type="button" class="btn waves-effect waves-light btnsubmit" data-toggle="modal" data-target="#centralModalLg" id= "submitbtn">Submit</button>
+
+                        <button type="button" class="btn btnPrevious" >Previous Image</button>
+                    </div>
+
+                </div>
+
+            </div>
+            
+            
+
+        </form>
+
+        
+        <script src="static/js/Cookie.js"></script>
+        <script src="static/js/Initialize.js"></script>
+        <script src="static/js/boxes.js"></script>
+        <script src="static/js/controlanswer.js"></script>
+        <script src="static/js/EnableDisable.js"></script>
+        <script src="static/js/Image_related.js"></script>
+        <script src="static/js/WholeHTML.js"></script>
+        <script language='Javascript'>turkSetAssignmentID();</script>
+
+        
+{% endblock %}
