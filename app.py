@@ -13,11 +13,6 @@ app = Flask(__name__)
 def index():
     return render_template('index.html', the_title='Focus Ambiguity VQA')
 
-@app.route('/IoUshow',methods=['GET','POST'])
-def IoUshow():
-    return render_template('IoUshow.html')
-#background process happening without any refreshing
-@app.route('/getIOU',methods=['GET','POST'])
 @cross_origin()
 def getIOU():
     if request.method=="GET":
