@@ -1,7 +1,6 @@
 from flask import Flask, render_template, request,jsonify
 import numpy as np
 import json
-import cv2
 from flask_cors import cross_origin
 import boto3
 app = Flask(__name__)
@@ -30,20 +29,20 @@ def Toarray(xycoo):
     xycooArray=[[xy["x"],xy["y"]] for xy in xycoo]
     return xycooArray
 
-def IoU(xy1,xy2):
-    img1 = np.zeros((400,500,3),np.uint8)
-    img2 = np.zeros((400,500,3),np.uint8)
-    pts1=np.array(Toarray(xy1),np.int32)
-    pts2=np.array(Toarray(xy2),np.int32)
-    gt=cv2.fillPoly(img1,[pts1],(255,255,255))
-    usr=cv2.fillPoly(img2,[pts2],(255,255,255))
-    ROIand = cv2.bitwise_and(gt, usr)
-    ROIor = cv2.bitwise_or(gt, usr)
+# def IoU(xy1,xy2):
+#     img1 = np.zeros((400,500,3),np.uint8)
+#     img2 = np.zeros((400,500,3),np.uint8)
+#     pts1=np.array(Toarray(xy1),np.int32)
+#     pts2=np.array(Toarray(xy2),np.int32)
+#     gt=cv2.fillPoly(img1,[pts1],(255,255,255))
+#     usr=cv2.fillPoly(img2,[pts2],(255,255,255))
+#     ROIand = cv2.bitwise_and(gt, usr)
+#     ROIor = cv2.bitwise_or(gt, usr)
 
-    intersection = np.sum(ROIand)
-    union = np.sum(ROIor)
-    iou_score = intersection /  union
-    return jsonify({"iou":str(iou_score),"intersection":str(intersection),"union":str(union)})
+#     intersection = np.sum(ROIand)
+#     union = np.sum(ROIor)
+#     iou_score = intersection /  union
+#     return jsonify({"iou":str(iou_score),"intersection":str(intersection),"union":str(union)})
 
 
 
