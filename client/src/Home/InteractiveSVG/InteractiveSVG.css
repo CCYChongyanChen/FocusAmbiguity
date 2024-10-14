@@ -1,0 +1,7 @@
+.responsivesvg {
+    display: flex;
+    max-width: 90%;
+    max-height: 90%;
+    width: auto;
+    height: auto;
+}
