@@ -1,0 +1,98 @@
+.subsection {
+  border: 2px solid #000000;
+  border-radius: 5px;
+  width: 62vw;
+}
+.subsection1 {
+  height: 35vh;
+  width: 100%;
+}
+.subsection2 {
+  height: 29vh;
+  width: 99%;
+}
+
+.hide{
+    background-color: #D2D2D2;
+}
+
+p.hide{
+    color: #939393;
+}
+
+p.bold{
+    font-weight: bold;
+}
+
+.question {
+  font-size: 28px;
+  font-weight: semi-bold;
+  display: inline;
+  max-width: fit-content;
+}
+
+.questionBox {
+  display: flex;
+  height: 13%;
+  width: 100%;
+  margin-top: 2%;
+  margin-left: 2%;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.answerBox {
+  display: flex;
+  height: 70%;
+  width: 100%;
+  margin-top: 2%;
+  margin-left: 2%;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.submitButtonContainer {
+  display: flex;
+  margin-top: -3%;
+  height: 10%;
+  width: 98%;
+  justify-content: flex-end;
+}
+
+.submitButton {
+  font-size: 16px;
+  font-weight: semi-bold;
+  cursor: pointer;
+}
+
+.questionBoxPart2 {
+  margin-top: 2%;
+  display: flex;
+  justify-content: flex-start;
+  /* Align items to the left */
+  align-items: flex-start;
+  /* Vertically align items to the top/left */
+  width: 99%;
+  /* Ensure it takes full width */
+  text-align: left;
+  /* Align text to the left */
+  height: 30%;
+}
+
+.question-blue {
+  color: #0852f8;
+}
+
+.questionBoxPart3 {
+    margin-top: 3%;
+    display: flex;
+    justify-content: flex-start;
+    /* Align items to the left */
+    align-items: center;
+    /* Vertically align items to the top/left */
+    width: 99%;
+    /* Ensure it takes full width */
+    text-align: left;
+    /* Align text to the left */
+    height: 30%;
+}

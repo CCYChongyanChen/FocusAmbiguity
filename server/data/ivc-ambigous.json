@@ -1,0 +1,30 @@
+[
+  {
+    "id": 0,
+    "imageURL": "images/ivc-ambigous-000.jpg",
+    "questions": [
+      "What parts of the image might be involved in ensuring visibility 000?",
+      "What parts of the image might be involved in animals 000?",
+      "What parts of the image might be involved in animal sitting in the trees 000?",
+      "What parts of the image might be involved in ensuring security 000?",
+      "What parts of the image could we do without 000?"
+    ],
+    "selectedQuestions": [
+      1,
+      2,
+      3,
+      4
+    ]
+  },
+  {
+    "id": 1,
+    "imageURL": "images/ivc-ambigous-001.jpg",
+    "questions": [
+      "What parts of the image might be involved in ensuring visibility 001?",
+      "What parts of the image might be involved in animals 001?",
+      "What parts of the image might be involved in animal sitting in the trees 001?",
+      "What parts of the image might be involved in ensuring security 001?"
+    ],
+    "selectedQuestions": []
+  }
+]
