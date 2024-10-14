@@ -14,11 +14,11 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
   questions,
   selectedQuestion,
 }) => {
-  const [questionIndex, setQuestionIndex] = useState<number>(0);
+  const [questionIndex, setQuestionIndex] = useState<number>(1);
 
   // TODO: - Implement the handleChange function with canvas interactivity to mark contours
   // TODO: - Next Image to change next image
-  
+
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setQuestionIndex(value);
   };
@@ -77,7 +77,7 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
           <p className="question">
             Select on all the regions the question "
             <span key={questionIndex} className="question question-blue">
-              {questions[questionIndex]}
+              {questions[selectedQuestion[questionIndex - 1]]}
             </span>
             " is referring to.
           </p>
