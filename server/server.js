@@ -46,7 +46,7 @@ app.get("/api/users/:id", (req, res) => {
 });
 
 // PUT: Update an existing user by ID
-app.put("/api/users/:id", (req, res) => {
+app.put("/api/users/:id/selectedQuestions", (req, res) => {
   const data = readData();
   const userIndex = data.findIndex(
     (user) => user.id === parseInt(req.params.id),
@@ -54,6 +54,21 @@ app.put("/api/users/:id", (req, res) => {
 
   if (userIndex !== -1) {
     data[userIndex].selectedQuestions = req.body.selectedQuestions;
+    writeData(data);
+    res.json(data[userIndex]);
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
+});
+
+app.put("/api/users/:id/selectedMasks", (req, res) => {
+  const data = readData();
+  const userIndex = data.findIndex(
+    (user) => user.id === parseInt(req.params.id),
+  );
+
+  if (userIndex !== -1) {
+    data[userIndex].selectedMasks = req.body.selectedMasks;
     writeData(data);
     res.json(data[userIndex]);
   } else {

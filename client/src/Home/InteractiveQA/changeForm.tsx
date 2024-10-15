@@ -2,7 +2,7 @@ export async function putSelectedQuestion(questions: number[], id: number) {
   try {
     alert(`Selected questions: ${questions}`);
     alert(`Updating selected questions for id: ${id}`);
-    await fetch(`http://localhost:4000/api/users/${id}`, {
+    await fetch(`http://localhost:4000/api/users/${id}/selectedQuestions`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
