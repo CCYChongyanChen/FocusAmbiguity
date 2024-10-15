@@ -50,7 +50,6 @@ const InteractiveQALanding: React.FC<InteractiveQALandingProps> = ({
           }}
           onClick={() =>
             putSelectedQuestion(selectedQuestion, id).then(() => {
-              alert("Selected questions submitted successfully!");
             })
           }
         >

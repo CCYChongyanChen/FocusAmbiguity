@@ -2,7 +2,7 @@
 .container {
   background-color: white;
   display: flex;
-  justify-content: space-around;
+  flex-direction: column;
   /* Vertically center the children */
   align-items: center;
   /* Horizontally center the children */
@@ -11,6 +11,41 @@
   /* Sets the container height to 100% of the viewport */
   width: 100vw;
   /* Sets the container width to 100% of the viewport */
+}
+
+.upperContainer {
+  display: flex;
+  justify-content: space-around;
+  /* Vertically center the children */
+  align-items: center;
+  /* Horizontally center the children */
+  /* Creates space between sections */
+  height: 85vh;
+  /* Sets the container height to 100% of the viewport */
+  width: 100vw;
+  /* Sets the container width to 100% of the viewport */
+}
+
+.lowerContainer {
+  display: flex;
+  /* Vertically center the children */
+  justify-content: flex-end;
+  /* Horizontally center the children */
+  /* Creates space between sections */
+  height: 3.5vh;
+  /* Sets the container height to 100% of the viewport */
+  width: 90vw;
+  /* Sets the container width to 100% of the viewport */
+}
+
+.lowerContainer2{
+  justify-content: flex-start;
+  /* Horizontally center the children */
+  margin-top: 3vh;
+  width: 95vw;
+  font-size: 14px;
+  font-weight: 600;
+  font-family: "Open Sans", sans-serif;
 }
 
 body {
@@ -62,7 +97,7 @@ body {
 .submitButtonContainer {
   display: flex;
   margin-top: -3%;
-  height: 10%;
+  height: 3.5vh;
   width: 98%;
   justify-content: flex-end;
 }
