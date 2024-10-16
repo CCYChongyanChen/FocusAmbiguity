@@ -5,7 +5,7 @@ export async function putSelectedQuestion(questions: number[], id: number) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ selectedQuestions: questions }),
+      body: JSON.stringify({ selected_questions: questions }),
     });
   } catch (error) {
     alert("Error updating selected questions, please resubmit");

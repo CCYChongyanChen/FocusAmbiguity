@@ -14,22 +14,24 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({ id }) => {
     width: number;
     height: number;
   }>({ width: 0, height: 0 });
-  const [masks, setMasks] = React.useState<AmbData["masks"]>([]);
-  const [selectedMask, setSelectedMask] = React.useState<
-    AmbData["selectedMasks"]
+  const [partsPolygon, setPartsPolygon] = React.useState<
+    AmbData["parts_polygons"]["polygons"]
   >([]);
-  const [selectedPolygon, setSelectedPolygon] = React.useState<d3.Selection<
-    SVGPolygonElement,
-    unknown,
-    null,
-    undefined
-  > | null>(null);
+  const [partsPolygonHasHoles, setPartsPolygonHasHoles] = React.useState<
+    AmbData["parts_polygons"]["has_holes"]
+  >([]);
+  const [selectedMask, setSelectedMask] = React.useState<
+    AmbData["selected_parts_polygons"]
+  >([]);
+  const [selectedPolygon, setSelectedPolygon] = React.useState<
+    d3.Selection<SVGPolygonElement, unknown, null, undefined>[]
+  >([]);
 
   const [selectedPolygonIndex, setSelectedPolygonIndex] =
     React.useState<number>(-1);
 
   const [hidedPolygon, setHidedPolygon] = React.useState<
-    d3.Selection<SVGPolygonElement, unknown, null, undefined>[]
+    d3.Selection<SVGPolygonElement, unknown, null, undefined>[][]
   >([]);
 
   // Fetch the JSON data on component mount
@@ -40,13 +42,21 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({ id }) => {
       .then((response) => response.json())
       .then((data: AmbData) => {
         if (data) {
+          console.log("Data fetched:", data);
           setImageURL(data.imageURL); // Set the image URL for this id
-          setImageDimensions({
-            width: data.width,
-            height: data.height,
-          });
-          setMasks(data.masks);
-          setSelectedMask(data.selectedMasks);
+
+          // set image dimensions by load image
+          const img = new Image();
+          img.src = imageURL;
+          img.onload = () => {
+            setImageDimensions({
+              width: img.width,
+              height: img.height,
+            });
+          };
+          setPartsPolygon(data.parts_polygons.polygons);
+          setPartsPolygonHasHoles(data.parts_polygons.has_holes);
+          setSelectedMask(data.selected_parts_polygons);
         }
       })
       .catch((error) => {
@@ -55,17 +65,24 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({ id }) => {
   };
 
   useEffect(() => {
-    console.log("Fetching data for id:", id);
     fetchQuestions(id);
-  }, [id]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, imageURL]);
 
   useEffect(() => {
     const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "h" && selectedPolygon !== null) {
+      if (event.key === "h" && selectedPolygon.length > 0) {
         // Hide the selected polygon when "h" is pressed
-        selectedPolygon.style("display", "none");
-        setHidedPolygon([...hidedPolygon, selectedPolygon]);
-        setSelectedPolygon(null); // Deselect after hiding
+        selectedPolygon.forEach((polygon) => {
+          if (polygon) {
+            polygon.style("display", "none");
+          }
+        });
+        setHidedPolygon((prevHidedPolygon) => [
+          ...prevHidedPolygon,
+          selectedPolygon,
+        ]);
+        setSelectedPolygon([]); // Deselect after hiding
         console.log("Selected polygon hidden");
       }
     };
@@ -85,7 +102,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({ id }) => {
       imageURL &&
       imageDimensions.width > 0 &&
       imageDimensions.height > 0 &&
-      masks.length > 0
+      partsPolygon.length > 0
     ) {
       const svg = d3.select(svgRef.current);
 
@@ -102,77 +119,97 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({ id }) => {
         .attr("x", 0)
         .attr("y", 0);
 
-      masks.forEach((mask, index) => {
-        // segmentation is a flat array of points
-        // Convert it to an array of [x, y] pairs
-        const segmentations = mask.segmentation;
-        const points = [];
-        for (let i = 0; i < segmentations.length; i += 2) {
-          points.push([segmentations[i], segmentations[i + 1]]);
-        }
+      partsPolygon.forEach((parts, groupIndex) => {
+        // parts is now an array of multiple segmentations (2D array)
+        const polygons = parts.map((segmentations, partIndex) => {
+          const points = [];
+          for (let i = 0; i < segmentations.length; i += 2) {
+            points.push([segmentations[i], segmentations[i + 1]]);
+          }
 
-        // convert the points to a string
-        const pointsString = points.map((point) => point.join(",")).join(" ");
-        // Append the polygon to the SVG
-        const polygon = svg
-          .append("polygon")
-          .attr("points", pointsString) // Use the transformed points string
-          .attr("fill", "blue")
-          .attr("stroke", "blue")
-          .attr("opacity", 0.5)
-          .attr("stroke-width", 2);
+          // convert the points to a string
+          const pointsString = points.map((point) => point.join(",")).join(" ");
 
-        if (selectedMask.includes(index)) {
-          polygon
-            .attr("fill", "red")
-            .attr("stroke", "red")
-            .attr("opacity", 0.5);
-        }
+          // Append the polygon to the SVG
+          return svg
+            .append("polygon")
+            .attr("points", pointsString)
+            .attr("fill", "blue")
+            .attr("stroke", "blue")
+            .attr("opacity", 0.5)
+            .attr("stroke-width", 2);
+        });
 
-        let isPrevSelected = selectedMask.includes(index);
+        // Check if the group is already selected
+        let isPrevSelected = selectedMask.includes(groupIndex);
         let isSelected = false;
 
-        polygon.on("click", function () {
-          // situation if polygon has been chosen as question but not currently selected
-          if (isPrevSelected && !isSelected) {
-            polygon
-              .attr("fill", "red")
-              .attr("opacity", 0.7)
-              .attr("stroke", "black")
-              .attr("stroke-dasharray", "5,5"); // Add dashed stroke (5px dash, 5px gap)
-            setSelectedPolygon(polygon);
-            setSelectedPolygonIndex(index);
-            isSelected = true;
-          } else if (isPrevSelected && isSelected) {
+        // Apply red fill for previously selected parts
+        if (isPrevSelected) {
+          polygons.forEach((polygon) => {
             polygon
               .attr("fill", "red")
               .attr("stroke", "red")
               .attr("opacity", 0.5);
-            setSelectedPolygon(null);
-            setSelectedPolygonIndex(-1);
-            isSelected = false;
-          } else if (!isPrevSelected && !isSelected) {
-            polygon
-              .attr("fill", "red")
-              .attr("opacity", 0.7)
-              .attr("stroke", "black")
-              .attr("stroke-dasharray", "5,5"); // Add dashed stroke (5px dash, 5px gap)
-            setSelectedPolygon(polygon);
-            setSelectedPolygonIndex(index);
-            isSelected = true;
-          } else {
-            polygon
-              .attr("fill", "blue")
-              .attr("stroke", "blue")
-              .attr("opacity", 0.5);
-            setSelectedPolygon(null);
-            setSelectedPolygonIndex(-1);
-            isSelected = false;
-          }
+          });
+        }
+
+        // Click handler for selecting/deselecting all parts in the group
+        polygons.forEach((polygon) => {
+          polygon.on("click", function () {
+            if (isPrevSelected && !isSelected) {
+              // If the group was previously selected but not currently selected, select all
+              polygons.forEach((poly) => {
+                poly
+                  .attr("fill", "red")
+                  .attr("opacity", 0.7)
+                  .attr("stroke", "black")
+                  .attr("stroke-dasharray", "5,5"); // Add dashed stroke (5px dash, 5px gap)
+              });
+              setSelectedPolygon(polygons);
+              setSelectedPolygonIndex(groupIndex);
+              isSelected = true;
+            } else if (isPrevSelected && isSelected) {
+              // Deselect the group
+              polygons.forEach((poly) => {
+                poly
+                  .attr("fill", "red")
+                  .attr("stroke", "red")
+                  .attr("opacity", 0.5);
+              });
+              setSelectedPolygon([]);
+              setSelectedPolygonIndex(-1);
+              isSelected = false;
+            } else if (!isPrevSelected && !isSelected) {
+              // If the group was not previously selected, select all
+              polygons.forEach((poly) => {
+                poly
+                  .attr("fill", "red")
+                  .attr("opacity", 0.7)
+                  .attr("stroke", "black")
+                  .attr("stroke-dasharray", "5,5"); // Add dashed stroke (5px dash, 5px gap)
+              });
+              setSelectedPolygon(polygons);
+              setSelectedPolygonIndex(groupIndex);
+              isSelected = true;
+            } else {
+              // Deselect all polygons in the group
+              polygons.forEach((poly) => {
+                poly
+                  .attr("fill", "blue")
+                  .attr("stroke", "blue")
+                  .attr("opacity", 0.5);
+              });
+              setSelectedPolygon([]);
+              setSelectedPolygonIndex(-1);
+              isSelected = false;
+            }
+          });
         });
       });
     }
-  }, [imageURL, imageDimensions, masks, selectedMask]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [imageURL, imageDimensions, svgRef]);
 
   function confirmSelections() {
     // Send the selected masks to the backend

@@ -37,7 +37,7 @@ app.get("/api/users", (req, res) => {
 // GET: Retrieve a single user by ID
 app.get("/api/users/:id", (req, res) => {
   const data = readData();
-  const user = data.find((user) => user.id === parseInt(req.params.id));
+  const user = data[parseInt(req.params.id)];
   if (user) {
     res.json(user);
   } else {
@@ -48,12 +48,10 @@ app.get("/api/users/:id", (req, res) => {
 // PUT: Update an existing user by ID
 app.put("/api/users/:id/selectedQuestions", (req, res) => {
   const data = readData();
-  const userIndex = data.findIndex(
-    (user) => user.id === parseInt(req.params.id),
-  );
+  const userIndex = parseInt(req.params.id);
 
   if (userIndex !== -1) {
-    data[userIndex].selectedQuestions = req.body.selectedQuestions;
+    data[userIndex].selected_questions = req.body.selected_questions;
     writeData(data);
     res.json(data[userIndex]);
   } else {
@@ -63,12 +61,9 @@ app.put("/api/users/:id/selectedQuestions", (req, res) => {
 
 app.put("/api/users/:id/selectedMasks", (req, res) => {
   const data = readData();
-  const userIndex = data.findIndex(
-    (user) => user.id === parseInt(req.params.id),
-  );
-
+  const userIndex = parseInt(req.params.id);
   if (userIndex !== -1) {
-    data[userIndex].selectedMasks = req.body.selectedMasks;
+    data[userIndex].selected_parts_polygons = req.body.selected_parts_polygons;
     writeData(data);
     res.json(data[userIndex]);
   } else {

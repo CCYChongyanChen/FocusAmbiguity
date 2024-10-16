@@ -20,8 +20,8 @@ const InteractiveSVG: React.FC<InteractiveSVGProps> = ({ id }) => {
 
           // Check if questions have been updated
           if (
-            data.selectedQuestions.length > 0 ||
-            data.selectedMasks.length > 0
+            data.selected_questions.length > 0 ||
+            data.selected_parts_polygons.length > 0
           ) {
             setHasUpdates(true); // Mark as updated
           } else {
@@ -37,7 +37,7 @@ const InteractiveSVG: React.FC<InteractiveSVGProps> = ({ id }) => {
     fetchQuestions();
 
     // Polling the backend every 30 seconds to check for updates
-    const intervalId = setInterval(fetchQuestions, 500); // Poll every 30 seconds
+    const intervalId = setInterval(fetchQuestions, 1000); // Poll every 30 seconds
 
     // Cleanup the interval on component unmount
     return () => clearInterval(intervalId);

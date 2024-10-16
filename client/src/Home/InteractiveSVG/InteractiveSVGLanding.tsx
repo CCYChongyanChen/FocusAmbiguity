@@ -11,8 +11,6 @@ const InteractiveSVGLanding: React.FC<InteractiveSVGProps> = ({ id }) => {
     width: number;
     height: number;
   }>({ width: 0, height: 0 });
-  const [masks, setMasks] = React.useState<AmbData["masks"]>([]);
-  const [selectedMask, setSelectedMask] = React.useState<number[]>([]);
 
   // Fetch the JSON data on component mount
   useEffect(() => {
@@ -23,10 +21,15 @@ const InteractiveSVGLanding: React.FC<InteractiveSVGProps> = ({ id }) => {
       .then((data: AmbData) => {
         if (data) {
           setImageURL(data.imageURL); // Set the image URL for this id
-          setImageDimensions({
-            width: data.width,
-            height: data.height,
-          });
+          // set image dimensions by load image
+          const img = new Image();
+          img.src = imageURL;
+          img.onload = () => {
+            setImageDimensions({
+              width: img.width,
+              height: img.height,
+            });
+          };
         }
       })
       .catch((error) => {

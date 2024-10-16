@@ -41,9 +41,9 @@ const SelectTools: React.FC<SelectToolsProps> = ({
           onClick={() => {
             if (hidedPolygon.length > 0) {
               const lastHidden = hidedPolygon.pop();
-              if (lastHidden) {
-                lastHidden.style("display", "block");
-              }
+              lastHidden?.forEach((polygon, index) => {
+                polygon.style("display", "block");
+              });
               setHidedPolygon([...hidedPolygon]);
             }
           }}
