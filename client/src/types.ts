@@ -22,9 +22,9 @@ export type AmbData = {
   selected_questions: number[];
   parts_polygons: partsPolygon;
   parts_masks: partsMasks[];
-  object_polygons: number[][];
-  // selected_objects_polygons: number[];
+  objects_polygons: number[][][];
   selected_parts_polygons: number[];
+  selected_objects_polygons: number[];
   object_labels: string[];
   parts_labels: string[];
   // selectedMasks: number[];

@@ -4936,10 +4936,9 @@
       ]
     ],
     "selected_parts_polygons": [
-      0,
-      1,
-      3
+      4
     ],
+    "selected_objects_polygons": [],
     "objects_labels": [
       "car",
       "cellular_telephone"
@@ -14157,11 +14156,8 @@
         ]
       ]
     ],
-    "selected_parts_polygons": [
-      0,
-      2,
-      1
-    ],
+    "selected_parts_polygons": [],
+    "selected_objects_polygons": [],
     "objects_labels": [
       "hat",
       "dog"

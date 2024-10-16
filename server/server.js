@@ -59,7 +59,7 @@ app.put("/api/users/:id/selectedQuestions", (req, res) => {
   }
 });
 
-app.put("/api/users/:id/selectedMasks", (req, res) => {
+app.put("/api/users/:id/selectedParts", (req, res) => {
   const data = readData();
   const userIndex = parseInt(req.params.id);
   if (userIndex !== -1) {
@@ -71,6 +71,18 @@ app.put("/api/users/:id/selectedMasks", (req, res) => {
   }
 });
 
+app.put("/api/users/:id/selectedObjects", (req, res) => {
+  const data = readData();
+  const userIndex = parseInt(req.params.id);
+  if (userIndex !== -1) {
+    data[userIndex].selected_objects_polygons =
+      req.body.selected_objects_polygons;
+    writeData(data);
+    res.json(data[userIndex]);
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
+});
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
