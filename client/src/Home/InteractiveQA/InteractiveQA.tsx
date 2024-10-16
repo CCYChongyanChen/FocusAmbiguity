@@ -11,6 +11,27 @@ const InteractiveQA: React.FC<InteractiveQAProps> = ({ id }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [hasUpdates, setHasUpdates] = useState<boolean>(false);
 
+  const fetchQuestions = () => {
+    fetch(`http://localhost:4000/api/users/${id}`)
+      .then((response) => response.json())
+      .then((data: AmbData) => {
+        setQuestions(data.questions);
+        setSelectedQuestion(data.selected_questions);
+        setLoading(false);
+
+        // Check if questions have been updated
+        if (data.selected_questions.length > 0) {
+          setHasUpdates(true); // Mark as updated
+        } else {
+          setHasUpdates(false); // Mark as not updated
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching questions:", error);
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
     // Function to fetch questions from the backend
     const fetchQuestions = () => {
@@ -18,11 +39,11 @@ const InteractiveQA: React.FC<InteractiveQAProps> = ({ id }) => {
         .then((response) => response.json())
         .then((data: AmbData) => {
           setQuestions(data.questions);
-          setSelectedQuestion(data.selectedQuestions);
+          setSelectedQuestion(data.selected_questions);
           setLoading(false);
 
           // Check if questions have been updated
-          if (data.selectedQuestions.length > 0) {
+          if (data.selected_questions.length > 0) {
             setHasUpdates(true); // Mark as updated
           } else {
             setHasUpdates(false); // Mark as not updated
