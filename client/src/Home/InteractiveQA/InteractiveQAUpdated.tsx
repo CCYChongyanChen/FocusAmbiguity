@@ -8,16 +8,15 @@ import "../Home.css"; // Importing the CSS
 import "./InteractiveQA.css"; // Importing the CSS
 import Button from "@mui/material/Button";
 import Pagination from "@mui/material/Pagination";
+import { putSelectedQuestion, deleteSelectedQuestion } from "./changeForm";
 
 const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
   id,
   questions,
   selectedQuestion,
+  fetchQuestions,
 }) => {
   const [questionIndex, setQuestionIndex] = useState<number>(1);
-
-  // TODO: - Implement the handleChange function with canvas interactivity to mark contours
-  // TODO: - Next Image to change next image
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setQuestionIndex(value);
@@ -56,13 +55,17 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
               fontFamily: "Open Sans",
               fontWeight: 600,
             }}
-            onClick={() =>
-              alert(
-                "Please report to the administrator() for further assistance. UNDER MAINTENANCE",
-              )
-            }
+            onClick={() => {
+              console.log(
+                "Delete question:",
+                selectedQuestion[questionIndex - 1],
+              );
+              deleteSelectedQuestion(id).then(() => {
+                fetchQuestions();
+              });
+            }}
           >
-            Report
+            Modify
           </Button>
         </div>
       </div>
