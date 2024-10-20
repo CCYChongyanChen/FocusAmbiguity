@@ -19,7 +19,7 @@ export async function putSelectedObject(masks: number[], id: number) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ selected_parts_polygons: masks }),
+      body: JSON.stringify({ selected_objects_polygons: masks }),
     });
   } catch (error) {
     alert("Error updating selected questions, please resubmit");

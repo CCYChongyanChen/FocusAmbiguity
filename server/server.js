@@ -59,6 +59,20 @@ app.put("/api/users/:id/selectedQuestions", (req, res) => {
   }
 });
 
+// DELETE EXISTING USER QUESTION TO [] BY ID
+app.delete("/api/users/:id/selectedQuestions", (req, res) => {
+  const data = readData();
+  const userIndex = parseInt(req.params.id);
+
+  if (userIndex !== -1) {
+    data[userIndex].selected_questions = [];
+    writeData(data);
+    res.json(data[userIndex]);
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
+});
+
 app.put("/api/users/:id/selectedParts", (req, res) => {
   const data = readData();
   const userIndex = parseInt(req.params.id);

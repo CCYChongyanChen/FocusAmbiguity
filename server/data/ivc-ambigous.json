@@ -4936,9 +4936,12 @@
       ]
     ],
     "selected_parts_polygons": [
-      4
+      4,
+      5
     ],
-    "selected_objects_polygons": [],
+    "selected_objects_polygons": [
+      0
+    ],
     "objects_labels": [
       "car",
       "cellular_telephone"

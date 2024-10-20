@@ -13,49 +13,45 @@ const Home: React.FC = () => {
 
   const [maximumLength, setMaximumLength] = useState<number>(0);
 
+  // Function to fetch questions from the backend
+  const fetchQuestions = () => {
+    fetch(`http://localhost:4000/api/users/${dataId}`)
+      .then((response) => response.json())
+      .then((data: AmbData) => {
+        setLoading(false);
+        // Check if questions have been updated
+        if (
+          data.selected_questions.length > 0 &&
+          data.selected_parts_polygons.length > 0
+        ) {
+          setHasUpdates(true); // Mark as updated
+        } else {
+          setHasUpdates(false); // Mark as not updated
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching questions:", error);
+        setLoading(false);
+      });
+  };
+
+  const fetchLength = () => {
+    fetch(`http://localhost:4000/api/users/`)
+      .then((response) => response.json())
+      .then((data: AmbData[]) => {
+        setMaximumLength(data.length);
+      })
+      .catch((error) => {
+        console.error("Error fetching questions:", error);
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
-    // Function to fetch questions from the backend
-    const fetchQuestions = () => {
-      fetch(`http://localhost:4000/api/users/${dataId}`)
-        .then((response) => response.json())
-        .then((data: AmbData) => {
-          setLoading(false);
-          // Check if questions have been updated
-          if (
-            data.selected_questions.length > 0 &&
-            data.selected_parts_polygons.length > 0
-          ) {
-            setHasUpdates(true); // Mark as updated
-          } else {
-            setHasUpdates(false); // Mark as not updated
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching questions:", error);
-          setLoading(false);
-        });
-    };
-
-    const fetchLength = () => {
-      fetch(`http://localhost:4000/api/users/`)
-        .then((response) => response.json())
-        .then((data: AmbData[]) => {
-          setMaximumLength(data.length);
-        })
-        .catch((error) => {
-          console.error("Error fetching questions:", error);
-          setLoading(false);
-        });
-    };
-
     fetchQuestions();
     fetchLength();
 
-    // Polling the backend every 30 seconds to check for updates
-    const intervalId = setInterval(fetchQuestions, 1000); // Poll every 30 seconds
-
-    // Cleanup the interval on component unmount
-    return () => clearInterval(intervalId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataId]);
 
   if (loading) {
@@ -69,7 +65,7 @@ const Home: React.FC = () => {
           <p>IMG ID: ivc-{String(dataId).padStart(3, "0")}</p>
         </div>
         <div className="upperContainer">
-          <InteractiveSVG id={dataId} />
+          <InteractiveSVG id={dataId} parentFetch={fetchQuestions} />
           <InteractiveQA id={dataId} />
         </div>
         <div className="lowerContainer">
@@ -92,7 +88,7 @@ const Home: React.FC = () => {
           <h1>IMG ID: ivc-{String(dataId).padStart(3, "0")}</h1>
         </div>
         <div className="upperContainer">
-          <InteractiveSVG id={dataId} />
+          <InteractiveSVG id={dataId} parentFetch={fetchQuestions} />
           <InteractiveQA id={dataId} />
         </div>
         <div className="lowerContainer">

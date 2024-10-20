@@ -6,41 +6,37 @@ import { AmbData, InteractiveSVGProps } from "../../types";
 import InteractiveSVGLanding from "./InteractiveSVGLanding";
 import InteractiveSVGUpdated from "./InteractiveSVGUpdated";
 
-const InteractiveSVG: React.FC<InteractiveSVGProps> = ({ id }) => {
+const InteractiveSVG: React.FC<InteractiveSVGProps> = ({ id, parentFetch }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [hasUpdates, setHasUpdates] = useState<boolean>(false);
 
+  const fetchQuestions = () => {
+    fetch(`http://localhost:4000/api/users/${id}`)
+      .then((response) => response.json())
+      .then((data: AmbData) => {
+        setLoading(false);
+
+        // Check if questions have been updated
+        if (
+          data.selected_questions.length > 0 ||
+          data.selected_parts_polygons.length > 0 ||
+          data.selected_objects_polygons.length > 0
+        ) {
+          setHasUpdates(true); // Mark as updated
+          parentFetch();
+        } else {
+          setHasUpdates(false); // Mark as not updated
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching questions:", error);
+        setLoading(false);
+      });
+  };
+
   useEffect(() => {
-    // Function to fetch questions from the backend
-    const fetchQuestions = () => {
-      fetch(`http://localhost:4000/api/users/${id}`)
-        .then((response) => response.json())
-        .then((data: AmbData) => {
-          setLoading(false);
-
-          // Check if questions have been updated
-          if (
-            data.selected_questions.length > 0 ||
-            data.selected_parts_polygons.length > 0
-          ) {
-            setHasUpdates(true); // Mark as updated
-          } else {
-            setHasUpdates(false); // Mark as not updated
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching questions:", error);
-          setLoading(false);
-        });
-    };
-
     fetchQuestions();
-
-    // Polling the backend every 30 seconds to check for updates
-    const intervalId = setInterval(fetchQuestions, 1000); // Poll every 30 seconds
-
-    // Cleanup the interval on component unmount
-    return () => clearInterval(intervalId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
   if (loading) {
@@ -48,9 +44,9 @@ const InteractiveSVG: React.FC<InteractiveSVGProps> = ({ id }) => {
   }
 
   if (!hasUpdates) {
-    return <InteractiveSVGLanding id={id} />;
+    return <InteractiveSVGLanding id={id} parentFetch={fetchQuestions} />;
   } else {
-    return <InteractiveSVGUpdated id={id} />;
+    return <InteractiveSVGUpdated id={id} parentFetch={fetchQuestions} />;
   }
 };
 

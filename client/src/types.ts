@@ -33,8 +33,7 @@ export type AmbData = {
 // You can add more common types or interfaces here as needed
 export type InteractiveSVGProps = {
   id: number;
-  width?: number;
-  height?: number;
+  parentFetch: () => void;
 };
 
 export type InteractiveQAProps = {
@@ -44,12 +43,14 @@ export type InteractiveQAProps = {
 export type InteractiveQALandingProps = {
   id: number;
   questions: string[];
+  fetchQuestions: () => void;
 };
 
 export type InteractiveLabelingProps = {
   id: number;
   questions: string[];
   selectedQuestion: number[];
+  fetchQuestions: () => void;
 };
 
 export type SelectToolsProps = {

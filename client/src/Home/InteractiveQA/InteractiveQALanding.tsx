@@ -11,8 +11,10 @@ import { putSelectedQuestion } from "./changeForm";
 const InteractiveQALanding: React.FC<InteractiveQALandingProps> = ({
   id,
   questions,
+  fetchQuestions,
 }) => {
   const [selectedQuestion, setSelectedQuestion] = useState<number[]>([]);
+
   function formHandler(e: any, index: number) {
     const { checked } = e.target;
     if (checked) {
@@ -22,46 +24,13 @@ const InteractiveQALanding: React.FC<InteractiveQALandingProps> = ({
     }
   }
 
-  const submitButton = () => {
-    if (selectedQuestion.length === 0) {
-      return (
-        <Button
-          variant="contained"
-          disabled
-          sx={{
-            width: "10%",
-            fontFamily: "Open Sans",
-            fontWeight: 600,
-          }}
-        >
-          Confirm
-        </Button>
-      );
-    } else {
-      return (
-        <Button
-          variant="contained"
-          sx={{
-            bgcolor: "#F9D68E",
-            color: "black",
-            width: "10%",
-            fontFamily: "Open Sans",
-            fontWeight: 600,
-          }}
-          onClick={() =>
-            putSelectedQuestion(selectedQuestion, id).then(() => {
-            })
-          }
-        >
-          Confirm
-        </Button>
-      );
-    }
-  };
-
   useEffect(() => {
     console.log("Selected questions:", selectedQuestion);
-  }, [selectedQuestion]);
+    putSelectedQuestion(selectedQuestion, id).then(() => {
+      fetchQuestions();
+    });
+    //eslint-disable-next-line
+  }, [selectedQuestion, id]);
 
   return (
     <div className="section section2">
@@ -86,7 +55,7 @@ const InteractiveQALanding: React.FC<InteractiveQALandingProps> = ({
           </FormGroup>
         </div>
 
-        <div className="submitButtonContainer">{submitButton()}</div>
+        {/* <div className="submitButtonContainer">{submitButton()}</div> */}
       </div>
       <div className="subsection subsection2 hide">
         <div className="questionBox">
