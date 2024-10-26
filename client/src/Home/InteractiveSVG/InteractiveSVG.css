@@ -5,3 +5,14 @@
     width: auto;
     height: auto;
 }
+
+.counter {
+    display: flex;
+    width: 90%;
+    height: 10%;
+    font-size: 22px;
+    font-weight: 600;
+    justify-content: flex-start;
+    margin-left: 2%;
+    align-items: center;
+}

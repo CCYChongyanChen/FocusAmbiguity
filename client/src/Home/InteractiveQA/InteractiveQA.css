@@ -25,10 +25,11 @@ p.bold{
 }
 
 .question {
-  font-size: 28px;
-  font-weight: semi-bold;
+  font-size: 24px;
+  font-weight: 600;
   display: inline;
   max-width: fit-content;
+  text-align: left;
 }
 
 .questionBox {
@@ -49,20 +50,6 @@ p.bold{
   margin-left: 2%;
   justify-content: flex-start;
   align-items: flex-start;
-}
-
-.submitButtonContainer {
-  display: flex;
-  margin-top: -3%;
-  height: 10%;
-  width: 98%;
-  justify-content: flex-end;
-}
-
-.submitButton {
-  font-size: 16px;
-  font-weight: semi-bold;
-  cursor: pointer;
 }
 
 .questionBoxPart2 {
