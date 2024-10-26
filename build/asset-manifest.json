@@ -1,0 +1,35 @@
+{
+  "files": {
+    "main.css": "/static/css/main.3a142861.css",
+    "main.js": "/static/js/main.9c1180fe.js",
+    "static/js/453.419a5d54.chunk.js": "/static/js/453.419a5d54.chunk.js",
+    "static/media/open-sans-latin-400-normal.woff2": "/static/media/open-sans-latin-400-normal.feb0d8644aca3df9fabf.woff2",
+    "static/media/open-sans-cyrillic-ext-400-normal.woff2": "/static/media/open-sans-cyrillic-ext-400-normal.36a8d1fd05dda56813b9.woff2",
+    "static/media/open-sans-math-400-normal.woff2": "/static/media/open-sans-math-400-normal.1313f53c6063cdaee5ae.woff2",
+    "static/media/open-sans-latin-400-normal.woff": "/static/media/open-sans-latin-400-normal.ec29e3b7a52c13cd7191.woff",
+    "static/media/open-sans-math-400-normal.woff": "/static/media/open-sans-math-400-normal.245c24ec641958c4da01.woff",
+    "static/media/open-sans-cyrillic-ext-400-normal.woff": "/static/media/open-sans-cyrillic-ext-400-normal.9b12896e256d73069440.woff",
+    "static/media/open-sans-latin-ext-400-normal.woff2": "/static/media/open-sans-latin-ext-400-normal.9aa550d775c13a65310a.woff2",
+    "static/media/open-sans-latin-ext-400-normal.woff": "/static/media/open-sans-latin-ext-400-normal.45afdf502a1152ff3a72.woff",
+    "static/media/open-sans-cyrillic-400-normal.woff2": "/static/media/open-sans-cyrillic-400-normal.01a8fce6bb81dce58431.woff2",
+    "static/media/open-sans-symbols-400-normal.woff2": "/static/media/open-sans-symbols-400-normal.9b4f2daf3fa17a8dfb8d.woff2",
+    "static/media/open-sans-greek-400-normal.woff2": "/static/media/open-sans-greek-400-normal.d61d10fb4bef2049668f.woff2",
+    "static/media/open-sans-cyrillic-400-normal.woff": "/static/media/open-sans-cyrillic-400-normal.e634d3fa0d29f030dbfd.woff",
+    "static/media/open-sans-vietnamese-400-normal.woff2": "/static/media/open-sans-vietnamese-400-normal.b7e168b0175544ef658f.woff2",
+    "static/media/open-sans-symbols-400-normal.woff": "/static/media/open-sans-symbols-400-normal.cd6494ccf1a1279b0b2c.woff",
+    "static/media/open-sans-hebrew-400-normal.woff2": "/static/media/open-sans-hebrew-400-normal.f65fca7e733e2a6990fb.woff2",
+    "static/media/open-sans-greek-400-normal.woff": "/static/media/open-sans-greek-400-normal.665b8c1e2490329022fc.woff",
+    "static/media/open-sans-vietnamese-400-normal.woff": "/static/media/open-sans-vietnamese-400-normal.83e5f6e46c2d0c489b68.woff",
+    "static/media/open-sans-hebrew-400-normal.woff": "/static/media/open-sans-hebrew-400-normal.82713d62c795e8ddf1c7.woff",
+    "static/media/open-sans-greek-ext-400-normal.woff2": "/static/media/open-sans-greek-ext-400-normal.d4de70500674183ec495.woff2",
+    "static/media/open-sans-greek-ext-400-normal.woff": "/static/media/open-sans-greek-ext-400-normal.3616aaac04f18fe72867.woff",
+    "index.html": "/index.html",
+    "main.3a142861.css.map": "/static/css/main.3a142861.css.map",
+    "main.9c1180fe.js.map": "/static/js/main.9c1180fe.js.map",
+    "453.419a5d54.chunk.js.map": "/static/js/453.419a5d54.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3a142861.css",
+    "static/js/main.9c1180fe.js"
+  ]
+}
