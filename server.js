@@ -119,9 +119,9 @@ app.put("/api/users/:id/selectedObjects", (req, res) => {
 });
 
 // Catch-all route to serve the React app's index.html (for React Router)
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "build", "index.html"));
-// });
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
 // Start the server
 app.listen(PORT, () => {
