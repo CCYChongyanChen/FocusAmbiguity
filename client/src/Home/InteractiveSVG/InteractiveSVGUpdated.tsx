@@ -20,9 +20,9 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
   const [partsPolygon, setPartsPolygon] = React.useState<
     AmbData["parts_polygons"]["polygons"]
   >([]);
-  const [partsPolygonHasHoles, setPartsPolygonHasHoles] = React.useState<
-    AmbData["parts_polygons"]["has_holes"]
-  >([]);
+  // const [partsPolygonHasHoles, setPartsPolygonHasHoles] = React.useState<
+  //   AmbData["parts_polygons"]["has_holes"]
+  // >([]);
   const [objectsPolygon, setObjectsPolygon] = React.useState<
     AmbData["objects_polygons"]
   >([]);
@@ -71,7 +71,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
             });
           };
           setPartsPolygon(data.parts_polygons.polygons);
-          setPartsPolygonHasHoles(data.parts_polygons.has_holes);
+          // setPartsPolygonHasHoles(data.parts_polygons.has_holes);
           setSelectedParts(data.selected_parts_polygons);
           setSelectedObjects(data.selected_objects_polygons);
           setObjectsPolygon(data.objects_polygons);

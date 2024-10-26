@@ -8,7 +8,7 @@ import "../Home.css"; // Importing the CSS
 import "./InteractiveQA.css"; // Importing the CSS
 import Button from "@mui/material/Button";
 import Pagination from "@mui/material/Pagination";
-import { putSelectedQuestion, deleteSelectedQuestion } from "./changeForm";
+import { deleteSelectedQuestion } from "./changeForm";
 
 const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
   id,

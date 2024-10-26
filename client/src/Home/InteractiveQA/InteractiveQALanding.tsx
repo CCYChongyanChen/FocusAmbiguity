@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
 import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import EditIcon from "@mui/icons-material/Edit";
 import "../Home.css"; // Importing the CSS
 import "./InteractiveQA.css"; // Importing the CSS
 import { InteractiveQALandingProps } from "../../types";
-import Button from "@mui/material/Button";
 import { putSelectedQuestion } from "./changeForm";
 import EditableFormControlLabel from "./EditableFormControlLabel";
 

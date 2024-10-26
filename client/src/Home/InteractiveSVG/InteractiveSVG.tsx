@@ -1,7 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../Home.css"; // Importing the CSS
 import "./InteractiveSVG.css"; // Importing the CSS
-import * as d3 from "d3";
 import { AmbData, InteractiveSVGProps } from "../../types";
 import InteractiveSVGLanding from "./InteractiveSVGLanding";
 import InteractiveSVGUpdated from "./InteractiveSVGUpdated";

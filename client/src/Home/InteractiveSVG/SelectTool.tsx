@@ -1,6 +1,5 @@
 import "../Home.css"; // Importing the CSS
 import "./InteractiveSVG.css"; // Importing the CSS
-import * as d3 from "d3";
 import { SelectToolsProps } from "../../types";
 import Button from "@mui/material/Button";
 
