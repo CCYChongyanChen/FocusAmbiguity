@@ -10,6 +10,7 @@ const Home: React.FC = () => {
 
   const [loading, setLoading] = useState<boolean>(true);
   const [hasUpdates, setHasUpdates] = useState<boolean>(false);
+  const [QAHasUpdate, setQAHasUpdate] = useState<boolean>(false);
 
   const [maximumLength, setMaximumLength] = useState<number>(0);
 
@@ -19,12 +20,14 @@ const Home: React.FC = () => {
       .then((response) => response.json())
       .then((data: AmbData) => {
         setLoading(false);
-        // Check if questions have been updated
+
         if (
           data.selected_questions.length > 0 &&
           data.selected_parts_polygons.length > 0
         ) {
           setHasUpdates(true); // Mark as updated
+        } else if (data.selected_questions.length > 0) {
+          setQAHasUpdate(true);
         } else {
           setHasUpdates(false); // Mark as not updated
         }
@@ -62,11 +65,15 @@ const Home: React.FC = () => {
     return (
       <div className="container">
         <div className="lowerContainer lowerContainer2">
-          <p>IMG ID: ivc-{String(dataId).padStart(3, "0")}</p>
+          <h1>IMG ID: ivc-{String(dataId).padStart(3, "0")}</h1>
         </div>
         <div className="upperContainer">
-          <InteractiveSVG id={dataId} parentFetch={fetchQuestions} />
-          <InteractiveQA id={dataId} />
+          <InteractiveSVG
+            id={dataId}
+            parentFetch={fetchQuestions}
+            updated={QAHasUpdate}
+          />
+          <InteractiveQA id={dataId} parentFetch={fetchQuestions} />
         </div>
         <div className="lowerContainer">
           <Button
@@ -88,8 +95,12 @@ const Home: React.FC = () => {
           <h1>IMG ID: ivc-{String(dataId).padStart(3, "0")}</h1>
         </div>
         <div className="upperContainer">
-          <InteractiveSVG id={dataId} parentFetch={fetchQuestions} />
-          <InteractiveQA id={dataId} />
+          <InteractiveSVG
+            id={dataId}
+            parentFetch={fetchQuestions}
+            updated={QAHasUpdate}
+          />
+          <InteractiveQA id={dataId} parentFetch={fetchQuestions} />
         </div>
         <div className="lowerContainer">
           <Button

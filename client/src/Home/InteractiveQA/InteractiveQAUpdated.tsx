@@ -26,8 +26,9 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
       <div className="subsection subsection1">
         <div className="questionBox">
           <p className="question">
-            Step 1: Please select the best question that is referring to
-            multiple regions.{" "}
+            Step 1: Please select, edit, or create an ambiguous question. There
+            should be an ambiguity regarding what visual contents the question
+            asks about.{" "}
           </p>
         </div>
 

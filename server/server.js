@@ -25,16 +25,19 @@ const writeData = (data) => {
   fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2));
 };
 
-app.get("/", (req, res) => {
-  res.send("Welcome to the Users API!");
+// Serve the static files from the React app
+app.use(express.static(path.join(__dirname, "build")));
+
+// API Routes
+app.get("/api", (req, res) => {
+  res.json({ message: "Welcome to the API" });
 });
-// GET: Retrieve all data from the JSON file
+
 app.get("/api/users", (req, res) => {
   const data = readData();
   res.json(data);
 });
 
-// GET: Retrieve a single user by ID
 app.get("/api/users/:id", (req, res) => {
   const data = readData();
   const user = data[parseInt(req.params.id)];
@@ -45,7 +48,6 @@ app.get("/api/users/:id", (req, res) => {
   }
 });
 
-// PUT: Update an existing user by ID
 app.put("/api/users/:id/selectedQuestions", (req, res) => {
   const data = readData();
   const userIndex = parseInt(req.params.id);
@@ -59,7 +61,25 @@ app.put("/api/users/:id/selectedQuestions", (req, res) => {
   }
 });
 
-// DELETE EXISTING USER QUESTION TO [] BY ID
+app.put("/api/users/:id/modifyQuestion", (req, res) => {
+  const data = readData();
+  const userIndex = parseInt(req.params.id);
+  if (userIndex !== -1) {
+    let length = data[userIndex].questions.length;
+    if (req.body.index < length) {
+      data[userIndex].questions[req.body.index] = req.body.question;
+      writeData(data);
+      res.json(data[userIndex]);
+    } else {
+      data[userIndex].questions.push(req.body.question);
+      writeData(data);
+      res.json(data[userIndex]);
+    }
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
+});
+
 app.delete("/api/users/:id/selectedQuestions", (req, res) => {
   const data = readData();
   const userIndex = parseInt(req.params.id);
@@ -97,6 +117,12 @@ app.put("/api/users/:id/selectedObjects", (req, res) => {
     res.status(404).json({ message: "User not found" });
   }
 });
+
+// Catch-all route to serve the React app's index.html (for React Router)
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "build", "index.html"));
+// });
+
 // Start the server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

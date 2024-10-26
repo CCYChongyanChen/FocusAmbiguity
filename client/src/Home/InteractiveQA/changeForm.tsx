@@ -21,3 +21,17 @@ export async function deleteSelectedQuestion(id: number) {
     alert("Error deleting selected questions, please resubmit");
   }
 }
+
+export async function putQuestion(id: number, index: number, question: string) {
+  try {
+    await fetch(`http://localhost:4000/api/users/${id}/modifyQuestion`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ index, question }),
+    });
+  } catch (error) {
+    alert("Error updating questions, please resubmit");
+  }
+}

@@ -5,7 +5,7 @@ import { AmbData, InteractiveQAProps } from "../../types";
 import InteractiveQALanding from "./InteractiveQALanding"; // Assume this component exists
 import InteractiveQAUpdated from "./InteractiveQAUpdated"; // Assume this component exists
 
-const InteractiveQA: React.FC<InteractiveQAProps> = ({ id }) => {
+const InteractiveQA: React.FC<InteractiveQAProps> = ({ id, parentFetch }) => {
   const [questions, setQuestions] = useState<string[]>([]);
   const [selectedQuestion, setSelectedQuestion] = useState<number[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -22,6 +22,7 @@ const InteractiveQA: React.FC<InteractiveQAProps> = ({ id }) => {
         // Check if questions have been updated
         if (data.selected_questions.length > 0) {
           setHasUpdates(true); // Mark as updated
+          parentFetch(); // Fetch the updated data
         } else {
           setHasUpdates(false); // Mark as not updated
         }

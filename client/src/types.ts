@@ -1,5 +1,7 @@
 // src/types.ts
 
+import { index } from "d3";
+
 // Define the AmbData type
 // Define segmentation type which inherit in AmbData
 
@@ -34,16 +36,26 @@ export type AmbData = {
 export type InteractiveSVGProps = {
   id: number;
   parentFetch: () => void;
+  updated: boolean;
 };
 
 export type InteractiveQAProps = {
   id: number;
+  parentFetch: () => void;
 };
 
 export type InteractiveQALandingProps = {
   id: number;
   questions: string[];
   fetchQuestions: () => void;
+};
+
+export type EditableFormControlLabelProps = {
+  id: number;
+  editing: boolean;
+  index: number;
+  selectedQuestion: string;
+  formHandler: (event: React.ChangeEvent<any>, index: number) => void;
 };
 
 export type InteractiveLabelingProps = {
