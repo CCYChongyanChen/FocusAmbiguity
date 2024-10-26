@@ -1,0 +1,67 @@
+name: Deploy to Heroku
+
+on:
+  push:
+    branches:
+      - main  # Trigger workflow on merge to main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment for building the React app
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+
+      # Step 3: Install dependencies for React app (in client folder)
+      - name: Install dependencies for React
+        run: |
+          cd client
+          yarn install
+
+      # Step 4: Build the React app
+      - name: Build React app
+        run: |
+          cd client
+          yarn build
+
+      # Step 5: Move the build folder to the server/ directory
+      - name: Move build folder to server
+        run: |
+          mv client/build server/build
+
+      # Step 6: Commit and push the server/ folder with build to a new deploy branch
+      - name: Push to deploy branch
+        run: |
+          git config user.name "Andy-LZH"
+          git config user.email "cynayd@gmail.com"
+          git checkout -b deploy
+          git add server
+          git commit -m "Deploy build to Heroku"
+          git push origin deploy --force
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 7: Checkout the deploy branch
+      - name: Checkout deploy branch
+        uses: actions/checkout@v3
+        with:
+          ref: deploy
+
+      # Step 8: Deploy to Heroku using the Heroku CLI
+      - name: Deploy to Heroku
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
+        run: |
+          git remote add heroku https://git.heroku.com/focusambiguity.git
+          git push heroku deploy:main --force
