@@ -20,7 +20,12 @@ const InteractiveSVGLanding: React.FC<InteractiveSVGProps> = ({ id }) => {
       .then((response) => response.json())
       .then((data: AmbData) => {
         if (data) {
-          setImageURL(data.imageURL); // Set the image URL for this id
+          setImageURL(
+            `https://focusambiguity-f3d2d4c819b3.herokuapp.com/fetch-image?url=${encodeURIComponent(
+              data.imageURL,
+            )}`,
+          );
+          // setImageURL(data.imageURL); // Set the image URL for this id
           // set image dimensions by load image
           const img = new Image();
           img.src = imageURL;
