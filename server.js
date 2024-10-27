@@ -12,6 +12,8 @@ app.use(cors()); // Enable CORS for the frontend
 app.use(bodyParser.json()); // Parse JSON bodies
 app.use("/images", express.static(path.join(__dirname, "public/images")));
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 const dataFilePath = path.join(__dirname, "data/ivc-ambigous.json");
 
 // Helper function to read the JSON file
