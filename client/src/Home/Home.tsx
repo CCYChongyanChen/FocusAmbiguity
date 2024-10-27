@@ -41,7 +41,7 @@ const Home: React.FC = () => {
   };
 
   const fetchLength = () => {
-    fetch(`http://localhost:4000/api/users/`)
+    fetch(`https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/`)
       .then((response) => response.json())
       .then((data: AmbData[]) => {
         setMaximumLength(data.length);
