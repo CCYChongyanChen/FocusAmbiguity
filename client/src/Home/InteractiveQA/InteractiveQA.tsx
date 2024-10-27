@@ -12,7 +12,9 @@ const InteractiveQA: React.FC<InteractiveQAProps> = ({ id, parentFetch }) => {
   const [hasUpdates, setHasUpdates] = useState<boolean>(false);
 
   const fetchQuestions = () => {
-    fetch(`http://localhost:4000/api/users/${id}`)
+    fetch(
+      `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}`,
+    )
       .then((response) => response.json())
       .then((data: AmbData) => {
         setQuestions(data.questions);

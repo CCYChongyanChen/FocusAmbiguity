@@ -15,7 +15,7 @@ const InteractiveSVGLanding: React.FC<InteractiveSVGProps> = ({ id }) => {
   // Fetch the JSON data on component mount
   useEffect(() => {
     console.log("Fetching data for id:", id);
-    const getDataURL = `http://localhost:4000/api/users/${id}`;
+    const getDataURL = `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}`;
     fetch(getDataURL) // Fetching the JSON file from the public directory
       .then((response) => response.json())
       .then((data: AmbData) => {

@@ -52,7 +52,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
 
   // Fetch the JSON data on component mount
   const fetchQuestions = (id: number) => {
-    const getDataURL = `http://localhost:4000/api/users/${id}`;
+    const getDataURL = `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}`;
     console.log("Fetching data from:", getDataURL);
     fetch(getDataURL) // Fetching the JSON file from the ablic directory
       .then((response) => response.json())
