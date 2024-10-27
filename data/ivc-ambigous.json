@@ -1,6 +1,6 @@
 [
   {
-    "imageURL": "https://images.cocodataset.org/train2017/000000290234.jpg",
+    "imageURL": "http://images.cocodataset.org/train2017/000000290234.jpg",
     "questions": [
       "What parts of the image contain a phone ",
       "What parts of the image might be involved in ensuring visibility?",
@@ -4954,7 +4954,7 @@
     ]
   },
   {
-    "imageURL": "https://images.cocodataset.org/train2017/000000521747.jpg",
+    "imageURL": "http://images.cocodataset.org/train2017/000000521747.jpg",
     "questions": [
       "placeholder1",
       "What is this?",
