@@ -16,7 +16,9 @@ const Home: React.FC = () => {
 
   // Function to fetch questions from the backend
   const fetchQuestions = () => {
-    fetch(`http://localhost:4000/api/users/${dataId}`)
+    fetch(
+      `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${dataId}`,
+    )
       .then((response) => response.json())
       .then((data: AmbData) => {
         setLoading(false);
