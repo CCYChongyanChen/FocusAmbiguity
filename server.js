@@ -3,16 +3,16 @@ const fs = require("fs");
 const path = require("path");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const url = require("url");
+const https = require("https");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 4000;
 
 // Middleware
 app.use(cors()); // Enable CORS for the frontend
 app.use(bodyParser.json()); // Parse JSON bodies
 app.use("/images", express.static(path.join(__dirname, "public/images")));
-
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 const dataFilePath = path.join(__dirname, "data/ivc-ambigous.json");
 
@@ -21,6 +21,49 @@ const readData = () => {
   const data = fs.readFileSync(dataFilePath);
   return JSON.parse(data);
 };
+
+app.get("/fetch-image", (req, res) => {
+  let imageUrl = req.query.url; // Get the image URL from the query parameter
+
+  // check if the
+
+  if (!imageUrl) {
+    return res.status(400).send("Image URL is required");
+  }
+
+  if (imageUrl.startsWith("http://")) {
+    imageUrl = imageUrl.replace("http://", "https://");
+  }
+  const parsedUrl = url.parse(imageUrl);
+  console.log(`image_URL:${imageUrl}`);
+
+  // Check if the URL is valid
+  if (!parsedUrl.protocol || !parsedUrl.host) {
+    return res.status(400).send("Invalid image URL");
+  }
+
+  // Fetch the image, bypassing SSL certificate validation
+  https
+    .get(imageUrl, { rejectUnauthorized: false }, (response) => {
+      let data = "";
+
+      // Accumulate the binary data
+      response.setEncoding("binary");
+      response.on("data", (chunk) => {
+        data += chunk;
+      });
+
+      response.on("end", () => {
+        // Send the image data to the client
+        res.writeHead(200, { "Content-Type": "image/jpeg" });
+        res.end(data, "binary");
+      });
+    })
+    .on("error", (err) => {
+      console.error("Error fetching image:", err);
+      res.status(500).send("Error fetching image");
+    });
+});
 
 // Helper function to write to the JSON file
 const writeData = (data) => {
@@ -121,9 +164,9 @@ app.put("/api/users/:id/selectedObjects", (req, res) => {
 });
 
 // Catch-all route to serve the React app's index.html (for React Router)
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "build", "index.html"));
+// });
 
 // Start the server
 app.listen(PORT, () => {

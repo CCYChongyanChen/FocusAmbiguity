@@ -1,6 +1,6 @@
 [
   {
-    "imageURL": "http://images.cocodataset.org/train2017/000000290234.jpg",
+    "imageURL": "https://images.cocodataset.org/train2017/000000290234.jpg",
     "questions": [
       "What parts of the image contain a phone ",
       "What parts of the image might be involved in ensuring visibility?",
@@ -8,7 +8,6 @@
       ""
     ],
     "selected_questions": [
-      1
     ],
     "parts_polygons": {
       "polygons": [
@@ -4937,7 +4936,6 @@
       ]
     ],
     "selected_parts_polygons": [
-      1
     ],
     "selected_objects_polygons": [],
     "objects_labels": [
@@ -4954,7 +4952,7 @@
     ]
   },
   {
-    "imageURL": "http://images.cocodataset.org/train2017/000000521747.jpg",
+    "imageURL": "https://images.cocodataset.org/train2017/000000521747.jpg",
     "questions": [
       "placeholder1",
       "What is this?",
@@ -14157,9 +14155,7 @@
         ]
       ]
     ],
-    "selected_parts_polygons": [
-      3
-    ],
+    "selected_parts_polygons": [],
     "selected_objects_polygons": [],
     "objects_labels": [
       "hat",
