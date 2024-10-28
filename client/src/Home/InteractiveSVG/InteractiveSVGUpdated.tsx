@@ -4,7 +4,6 @@ import "./InteractiveSVG.css"; // Importing the CSS
 import * as d3 from "d3";
 import { AmbData, InteractiveSVGProps } from "../../types";
 import Button from "@mui/material/Button";
-import SelectTools from "./SelectTool";
 import { putSelectedObject, putSelectedParts } from "./updateMask";
 
 const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
@@ -32,9 +31,9 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
   const [selectedObjects, setSelectedObjects] = React.useState<
     AmbData["selected_objects_polygons"]
   >([]);
-  const [selectedPolygon, setSelectedPolygon] = React.useState<
-    d3.Selection<SVGPolygonElement, unknown, null, undefined>[]
-  >([]);
+  // const [selectedPolygon, setSelectedPolygon] = React.useState<
+  //   d3.Selection<SVGPolygonElement, unknown, null, undefined>[]
+  // >([]);
 
   const [selectedPolygonIndex, setSelectedPolygonIndex] =
     React.useState<number>(-1);
@@ -42,13 +41,9 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
   const [selectedObjectPolygonIndex, setSelectedObjectPolygonIndex] =
     React.useState<number>(-1);
 
-  const [selectedObjectPolygon, setSelectedObjectPolygon] = React.useState<
-    d3.Selection<SVGPolygonElement, unknown, null, undefined>[]
-  >([]);
-
-  const [hidedPolygon, setHidedPolygon] = React.useState<
-    d3.Selection<SVGPolygonElement, unknown, null, undefined>[][]
-  >([]);
+  // const [selectedObjectPolygon, setSelectedObjectPolygon] = React.useState<
+  //   d3.Selection<SVGPolygonElement, unknown, null, undefined>[]
+  // >([]);
 
   // Fetch the JSON data on component mount
   const fetchQuestions = (id: number) => {
@@ -92,47 +87,47 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, imageURL]);
 
-  useEffect(() => {
-    const handleKeyPress = (event: KeyboardEvent) => {
-      if (event.key === "h") {
-        if (selectedPolygon.length > 0) {
-          // Hide the selected polygon when "h" is pressed
-          selectedPolygon.forEach((polygon) => {
-            if (polygon) {
-              polygon.style("display", "none");
-            }
-          });
-          setHidedPolygon((prevHidedPolygon) => [
-            ...prevHidedPolygon,
-            selectedPolygon,
-          ]);
-          setSelectedPolygon([]); // Deselect after hiding
-          console.log("Selected parts polygon hidden");
-        } else if (selectedObjectPolygon.length > 0) {
-          // Hide the selected polygon when "h" is pressed
-          selectedObjectPolygon.forEach((polygon) => {
-            if (polygon) {
-              polygon.style("display", "none");
-            }
-          });
-          setHidedPolygon((prevHidedPolygon) => [
-            ...prevHidedPolygon,
-            selectedObjectPolygon,
-          ]);
-          setSelectedObjectPolygon([]); // Deselect after hiding
-          console.log("Selected object polygon hidden");
-        }
-      }
-    };
+  // useEffect(() => {
+  //   const handleKeyPress = (event: KeyboardEvent) => {
+  //     if (event.key === "h") {
+  //       if (selectedPolygon.length > 0) {
+  //         // Hide the selected polygon when "h" is pressed
+  //         selectedPolygon.forEach((polygon) => {
+  //           if (polygon) {
+  //             polygon.style("display", "none");
+  //           }
+  //         });
+  //         setHidedPolygon((prevHidedPolygon) => [
+  //           ...prevHidedPolygon,
+  //           selectedPolygon,
+  //         ]);
+  //         setSelectedPolygon([]); // Deselect after hiding
+  //         console.log("Selected parts polygon hidden");
+  //       } else if (selectedObjectPolygon.length > 0) {
+  //         // Hide the selected polygon when "h" is pressed
+  //         selectedObjectPolygon.forEach((polygon) => {
+  //           if (polygon) {
+  //             polygon.style("display", "none");
+  //           }
+  //         });
+  //         setHidedPolygon((prevHidedPolygon) => [
+  //           ...prevHidedPolygon,
+  //           selectedObjectPolygon,
+  //         ]);
+  //         setSelectedObjectPolygon([]); // Deselect after hiding
+  //         console.log("Selected object polygon hidden");
+  //       }
+  //     }
+  //   };
 
-    // Attach the event listener for keypress
-    window.addEventListener("keydown", handleKeyPress);
+  //   // Attach the event listener for keypress
+  //   window.addEventListener("keydown", handleKeyPress);
 
-    // Cleanup event listener when component is unmounted
-    return () => {
-      window.removeEventListener("keydown", handleKeyPress);
-    };
-  }, [selectedPolygon, hidedPolygon, selectedObjectPolygon]);
+  //   // Cleanup event listener when component is unmounted
+  //   return () => {
+  //     window.removeEventListener("keydown", handleKeyPress);
+  //   };
+  // }, [selectedPolygon, hidedPolygon, selectedObjectPolygon]);
 
   useEffect(() => {
     if (
@@ -198,6 +193,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
             console.log("Object clicked");
             console.log("Selected object polygon index:", groupIndex);
             if (isPrevSelected && !isSelected) {
+              console.log("Object selected");
               // If the group was previously selected but not currently selected, select all
               polygons.forEach((poly) => {
                 poly
@@ -206,23 +202,25 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
                   .attr("stroke", "black")
                   .attr("stroke-dasharray", "10,5"); // Add dashed stroke (10px dash, 5px gap)
               });
-              setSelectedObjectPolygon(polygons);
+              // setSelectedObjectPolygon(polygons);
               setSelectedObjectPolygonIndex(groupIndex);
-              setSelectedPolygon([]);
+              // setSelectedPolygon([]);
               setSelectedPolygonIndex(-1);
               isSelected = true;
             } else if (isPrevSelected && isSelected) {
+              console.log("Object selected");
               // Deselect the group
               polygons.forEach((poly) => {
                 poly
-                  // .attr("fill", "grey")
-                  .attr("stroke", "grey")
+                  .attr("fill", "grey")
+                  .attr("stroke", "red")
                   .attr("opacity", 0.5);
               });
-              setSelectedPolygon([]);
+              // setSelectedPolygon([]);
               setSelectedObjectPolygonIndex(-1);
               isSelected = false;
             } else if (!isPrevSelected && !isSelected) {
+              console.log("Object not selected");
               // If the group was not previously selected, select all
               polygons.forEach((poly) => {
                 poly
@@ -231,20 +229,21 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
                   .attr("stroke", "black")
                   .attr("stroke-dasharray", "5,5"); // Add dashed stroke (5px dash, 5px gap)
               });
-              setSelectedObjectPolygon(polygons);
+              // setSelectedObjectPolygon(polygons);
               setSelectedObjectPolygonIndex(groupIndex);
-              setSelectedPolygon([]);
+              // setSelectedPolygon([]);
               setSelectedPolygonIndex(-1);
               isSelected = true;
             } else {
+              console.log("Object deselected");
               // Deselect all polygons in the group
               polygons.forEach((poly) => {
                 poly
-                  // .attr("fill", "grey")
+                  .attr("fill", "grey")
                   .attr("stroke", "grey")
                   .attr("opacity", 0.5);
               });
-              setSelectedObjectPolygon([]);
+              // setSelectedObjectPolygon([]);
               setSelectedObjectPolygonIndex(-1);
               isSelected = false;
             }
@@ -264,15 +263,13 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
           const pointsString = points.map((point) => point.join(",")).join(" ");
 
           // Append the polygon to the SVG
-          return (
-            svg
-              .append("polygon")
-              .attr("points", pointsString)
-              // .attr("fill", "blue")
-              .attr("stroke", "blue")
-              .attr("opacity", 0.5)
-              .attr("stroke-width", 2)
-          );
+          return svg
+            .append("polygon")
+            .attr("points", pointsString)
+            .attr("fill", "transparent")
+            .attr("stroke", "blue")
+            .attr("opacity", 0.5)
+            .attr("stroke-width", 2);
         });
 
         // Check if the group is already selected
@@ -282,10 +279,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         // Apply red fill for previously selected parts
         if (isPrevSelected) {
           polygons.forEach((polygon) => {
-            polygon
-              // .attr("fill", "red")
-              .attr("stroke", "red")
-              .attr("opacity", 0.5);
+            polygon.attr("stroke", "red").attr("opacity", 0.5);
           });
         }
 
@@ -293,6 +287,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         polygons.forEach((polygon) => {
           polygon.on("click", function () {
             if (isPrevSelected && !isSelected) {
+              console.log("Object clicked");
               // If the group was previously selected but not currently selected, select all
               polygons.forEach((poly) => {
                 poly
@@ -301,23 +296,26 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
                   .attr("stroke", "black")
                   .attr("stroke-dasharray", "5,5"); // Add dashed stroke (5px dash, 5px gap)
               });
-              setSelectedPolygon(polygons);
+              // setSelectedPolygon(polygons);
               setSelectedPolygonIndex(groupIndex);
-              setSelectedObjectPolygon([]);
+              // setSelectedObjectPolygon([]);
               setSelectedObjectPolygonIndex(-1);
               isSelected = true;
             } else if (isPrevSelected && isSelected) {
+              console.log("Object selected");
               // Deselect the group
               polygons.forEach((poly) => {
                 poly
-                  // .attr("fill", "red")
+                  .attr("fill", "transparent")
                   .attr("stroke", "red")
-                  .attr("opacity", 0.5);
+                  .attr("opacity", 0.5)
+                  .attr("stroke-dasharray", "0,0"); // Add dashed stroke (5px dash, 5px gap)
               });
-              setSelectedPolygon([]);
+              // setSelectedPolygon([]);
               setSelectedPolygonIndex(-1);
               isSelected = false;
             } else if (!isPrevSelected && !isSelected) {
+              console.log("Object not selected");
               // If the group was not previously selected, select all
               polygons.forEach((poly) => {
                 poly
@@ -326,20 +324,21 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
                   .attr("stroke", "black")
                   .attr("stroke-dasharray", "5,5"); // Add dashed stroke (5px dash, 5px gap)
               });
-              setSelectedPolygon(polygons);
+              // setSelectedPolygon(polygons);
               setSelectedPolygonIndex(groupIndex);
-              setSelectedObjectPolygon([]);
+              // setSelectedObjectPolygon([]);
               setSelectedObjectPolygonIndex(-1);
               isSelected = true;
             } else {
+              console.log("Object deselected");
               // Deselect all polygons in the group
               polygons.forEach((poly) => {
                 poly
-                  // .attr("fill", "blue")
+                  .attr("fill", "transparent")
                   .attr("stroke", "blue")
                   .attr("opacity", 0.5);
               });
-              setSelectedPolygon([]);
+              // setSelectedPolygon([]);
               setSelectedPolygonIndex(-1);
               isSelected = false;
             }
@@ -381,8 +380,8 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
 
     setSelectedPolygonIndex(-1);
     setSelectedObjectPolygonIndex(-1);
-    setSelectedPolygon([]);
-    setSelectedObjectPolygon([]);
+    // setSelectedPolygon([]);
+    // setSelectedObjectPolygon([]);
   }
 
   const confirmSelectionButton = () => {
@@ -433,13 +432,13 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
           {selectedParts.length + selectedObjects.length}
         </p>
       </div>
-      <SelectTools
+      {/* <SelectTools
         hidedPolygon={hidedPolygon}
         setHidedPolygon={setHidedPolygon}
         setAllPolygonVisible={() => {
           d3.selectAll("polygon").style("display", "block");
         }}
-      />
+      /> */}
       <svg ref={svgRef}></svg>
       <div className="submitButtonContainer submitButtonContainerSVG">
         {confirmSelectionButton()}

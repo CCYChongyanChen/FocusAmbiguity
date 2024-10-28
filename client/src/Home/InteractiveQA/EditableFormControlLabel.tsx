@@ -42,6 +42,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
           onChange={handleInputChange}
           size="small"
           variant="outlined"
+          fullWidth
         />
       ) : (
         <FormControlLabel
