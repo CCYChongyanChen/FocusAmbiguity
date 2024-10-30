@@ -27,7 +27,7 @@ export type AmbData = {
   objects_polygons: number[][][];
   selected_parts_polygons: number[];
   selected_objects_polygons: number[];
-  object_labels: string[];
+  objects_labels: string[];
   parts_labels: string[];
   // selectedMasks: number[];
 };
