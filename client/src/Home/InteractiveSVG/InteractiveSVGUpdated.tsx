@@ -3,14 +3,15 @@ import "../Home.css"; // Importing the CSS
 import "./InteractiveSVG.css"; // Importing the CSS
 import * as d3 from "d3";
 import { AmbData, InteractiveSVGProps } from "../../types";
-import Button from "@mui/material/Button";
 import { putSelectedObject, putSelectedParts } from "./updateMask";
+import SelectTools from "./SelectTool";
 
 const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
   id,
   parentFetch,
 }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
+  const svgRefParts = useRef<SVGSVGElement | null>(null);
   const [imageURL, setImageURL] = React.useState<string>("");
   const [imageDimensions, setImageDimensions] = React.useState<{
     width: number;
@@ -49,11 +50,47 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
     [],
   );
 
+  const [hideAllLabel, setHideAllLabel] = React.useState<boolean>(false);
+
   // const [selectedObjectPolygon, setSelectedObjectPolygon] = React.useState<
   //   d3.Selection<SVGPolygonElement, unknown, null, undefined>[]
   // >([]);
 
   // Fetch the JSON data on component mount
+
+  const segmentationColors = [
+    "#FF6F61",
+    "#6B5B95",
+    "#88B04B",
+    "#F7CAC9",
+    "#92A8D1",
+    "#955251",
+    "#B565A7",
+    "#009B77",
+    "#DD4124",
+    "#45B8AC",
+    "#EFC050",
+    "#5B5EA6",
+    "#9B2335",
+    "#DFCFBE",
+    "#BC243C",
+    "#C3447A",
+    "#D65076",
+    "#E15D44",
+    "#7FCDCD",
+    "#9C9A40",
+    "#6C4F3D",
+    "#00A591",
+    "#2A4B7C",
+    "#E94B3C",
+    "#6C7A89",
+    "#F0EAD6",
+    "#9E1030",
+    "#6B4423",
+    "#F7786B",
+    "#91A8D0",
+  ];
+
   const fetchQuestions = (id: number) => {
     const getDataURL = `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}`;
     console.log("Fetching data from:", getDataURL);
@@ -140,6 +177,12 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
   // }, [selectedPolygon, hidedPolygon, selectedObjectPolygon]);
 
   useEffect(() => {
+    confirmSelections();
+    fetchQuestions(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedPolygonIndex, selectedObjectPolygonIndex]);
+
+  useEffect(() => {
     if (
       svgRef.current &&
       imageURL &&
@@ -147,16 +190,30 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
       imageDimensions.height > 0 &&
       partsPolygon.length > 0
     ) {
-      const svg = d3.select(svgRef.current);
+      const svgObject = d3.select(svgRef.current);
+      const svgParts = d3.select(svgRefParts.current);
 
-      svg
+      svgObject
         .attr(
           "viewBox",
           `0 0 ${imageDimensions.width} ${imageDimensions.height}`,
         )
         .attr("width", "90%"); // Make it responsive
 
-      svg
+      svgObject
+        .append("image")
+        .attr("href", imageURL) // Replace with the actual image path
+        .attr("x", 0)
+        .attr("y", 0);
+
+      svgParts
+        .attr(
+          "viewBox",
+          `0 0 ${imageDimensions.width} ${imageDimensions.height}`,
+        )
+        .attr("width", "90%"); // Make it responsive
+
+      svgParts
         .append("image")
         .attr("href", imageURL) // Replace with the actual image path
         .attr("x", 0)
@@ -175,13 +232,13 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
           const pointsString = points.map((point) => point.join(",")).join(" ");
 
           // Append the polygon to the SVG
-          return svg
+          return svgObject
             .append("polygon")
             .attr("points", pointsString)
             .attr("fill", "transparent")
             .attr("stroke", "white")
-            .attr("opacity", 1)
-            .attr("stroke-dasharray", "150,0"); // Add dashed stroke (5px dash, 5px gap)
+            .attr("opacity", 0.5)
+            .attr("stroke-dasharray", "100,0"); // Add dashed stroke (5px dash, 5px gap)
         });
 
         // // construct points array of [number, number] from segmentations array
@@ -193,15 +250,19 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
 
         const [cx, cy] = d3.polygonCentroid(points);
 
-        svg
-          .append("text")
-          .attr("x", cx)
-          .attr("y", cy)
-          .text(objectsClass[groupIndex])
-          .attr("text-anchor", "middle")
-          .attr("font-size", "14px")
-          .attr("fill", "white")
-          .attr("font-weight", "bold");
+        console.log(hideAllLabel);
+
+        if (!hideAllLabel) {
+          svgObject
+            .append("text")
+            .attr("x", cx)
+            .attr("y", cy)
+            .text(objectsClass[groupIndex])
+            .attr("text-anchor", "middle")
+            .attr("font-size", "14px")
+            .attr("fill", "white")
+            .attr("font-weight", "bold");
+        }
 
         // Check if the group is already selected
         let isPrevSelected = selectedObjects.includes(groupIndex);
@@ -211,7 +272,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         if (isPrevSelected) {
           polygons.forEach((polygon) => {
             polygon
-              // .attr("fill", "red")
+              .attr("fill", segmentationColors[groupIndex])
               .attr("stroke", "red")
               .attr("opacity", 0.5);
           });
@@ -226,7 +287,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               // If the group was previously selected but not currently selected, select all
               polygons.forEach((poly) => {
                 poly
-                  .attr("fill", "red")
+                  .attr("fill", segmentationColors[groupIndex])
                   .attr("opacity", 0.7)
                   .attr("stroke", "black")
                   .attr("stroke-dasharray", "10,5"); // Add dashed stroke (10px dash, 5px gap)
@@ -250,7 +311,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               // If the group was not previously selected, select all
               polygons.forEach((poly) => {
                 poly
-                  .attr("fill", "red")
+                  .attr("fill", segmentationColors[groupIndex])
                   .attr("opacity", 0.7)
                   .attr("stroke", "black")
                   .attr("stroke-dasharray", "5,5"); // Add dashed stroke (5px dash, 5px gap)
@@ -322,13 +383,13 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               .join(" ");
 
             // Append the polygon to the SVG
-            return svg
+            return svgParts
               .append("polygon")
               .attr("points", pointsString)
-              .attr("fill", "blue")
-              .attr("stroke", "white")
+              .attr("fill", segmentationColors[groupIndex])
+              .attr("stroke", "black")
               .attr("opacity", 0.5)
-              .attr("stroke-dasharray", "10,5"); // Add dashed stroke (5px dash, 5px gap)
+              .attr("stroke-dasharray", "30,5"); // Add dashed stroke (5px dash, 5px gap)
           },
         );
 
@@ -341,15 +402,17 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
 
         const [cx, cy] = d3.polygonCentroid(points);
 
-        svg
-          .append("text")
-          .attr("x", cx)
-          .attr("y", cy)
-          .text(partsClass[parts.groupIndex])
-          .attr("text-anchor", "middle")
-          .attr("font-size", "14px")
-          .attr("fill", "white")
-          .attr("font-weight", "medium");
+        if (!hideAllLabel) {
+          svgParts
+            .append("text")
+            .attr("x", cx)
+            .attr("y", cy)
+            .text(partsClass[parts.groupIndex])
+            .attr("text-anchor", "middle")
+            .attr("font-size", "14px")
+            .attr("fill", "white")
+            .attr("font-weight", "medium");
+        }
 
         // Check if the group is already selected
         let isPrevSelected = selectedParts.includes(parts.groupIndex);
@@ -359,9 +422,10 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         if (isPrevSelected) {
           polygons.forEach((polygon) => {
             polygon
-              .attr("fill", "red")
-              .attr("stroke", "red")
-              .attr("opacity", 0.5);
+              .attr("fill", segmentationColors[groupIndex])
+              .attr("stroke", "white")
+              .attr("stroke-dasharray", "10,5")
+              .attr("opacity", 0.8);
           });
         }
 
@@ -373,10 +437,9 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               // If the group was previously selected but not currently selected, select all
               polygons.forEach((poly) => {
                 poly
-                  .attr("fill", "red")
+                  .attr("fill", segmentationColors[groupIndex])
                   .attr("opacity", 0.7)
                   .attr("stroke", "black")
-                  .attr("stroke-dasharray", "5,5"); // Add dashed stroke (5px dash, 5px gap)
               });
               // setSelectedPolygon(polygons);
               setSelectedPolygonIndex(parts.groupIndex);
@@ -388,7 +451,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               // Deselect the group
               polygons.forEach((poly) => {
                 poly
-                  .attr("stroke", "red")
+                  .attr("stroke", segmentationColors[groupIndex])
                   .attr("opacity", 0.5)
                   .attr("stroke-dasharray", "0,0"); // Add dashed stroke (5px dash, 5px gap)
               });
@@ -400,7 +463,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               // If the group was not previously selected, select all
               polygons.forEach((poly) => {
                 poly
-                  .attr("fill", "red")
+                  .attr("fill", segmentationColors[groupIndex])
                   .attr("opacity", 0.7)
                   .attr("stroke", "black")
                   .attr("stroke-dasharray", "5,5"); // Add dashed stroke (5px dash, 5px gap)
@@ -415,7 +478,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               // Deselect all polygons in the group
               polygons.forEach((poly) => {
                 poly
-                  .attr("fill", "blue")
+                  .attr("fill", segmentationColors[groupIndex])
                   .attr("stroke", "white")
                   .attr("opacity", 0.5)
                   .attr("stroke-dasharray", "10,5"); // Add dashed stroke (5px dash, 5px gap)
@@ -429,10 +492,15 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imageURL, imageDimensions, svgRef]);
+  }, [imageURL, imageDimensions, svgRef, hideAllLabel, svgRefParts]);
 
   function confirmSelections() {
-    if (selectedPolygonIndex !== -1) {
+    console.log("Confirming selections...");
+    if (
+      selectedPolygonIndex !== -1 &&
+      !selectedParts.includes(selectedPolygonIndex)
+    ) {
+      console.log("selected parts", selectedParts);
       let newSelectedparts = [...selectedParts, selectedPolygonIndex];
       putSelectedParts(newSelectedparts, id)
         .then(() => {
@@ -446,7 +514,11 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         });
     }
 
-    if (selectedObjectPolygonIndex !== -1 && selectedPolygonIndex === -1) {
+    if (
+      selectedObjectPolygonIndex !== -1 &&
+      selectedPolygonIndex === -1 &&
+      !selectedObjects.includes(selectedObjectPolygonIndex)
+    ) {
       let newSelectedObjects = [...selectedObjects, selectedObjectPolygonIndex];
       putSelectedObject(newSelectedObjects, id)
         .then(() => {
@@ -460,71 +532,100 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         });
     }
 
+    if (
+      selectedObjects.includes(selectedObjectPolygonIndex) ||
+      selectedParts.includes(selectedPolygonIndex)
+    ) {
+      console.log("Already selected, now deselecting...");
+      if (selectedPolygonIndex !== -1) {
+        let newSelectedparts = selectedParts.filter(
+          (part) => part !== selectedPolygonIndex,
+        );
+        putSelectedParts(newSelectedparts, id)
+          .then(() => {
+            // Once the data is successfully sent, fetch the updated mask data
+            console.log("Parts updated. Fetching latest selected questions...");
+            fetchQuestions(id); // Fetch the latest data again
+            parentFetch(); // update parent
+          })
+          .catch((error) => {
+            console.error("Error updating parts:", error);
+          });
+      } else if (selectedObjectPolygonIndex !== -1) {
+        let newSelectedObjects = selectedObjects.filter(
+          (object) => object !== selectedObjectPolygonIndex,
+        );
+        putSelectedObject(newSelectedObjects, id)
+          .then(() => {
+            // Once the data is successfully sent, fetch the updated mask data
+            console.log(
+              "Objects updated. Fetching latest selected questions...",
+            );
+            fetchQuestions(id); // Fetch the latest data again
+            parentFetch(); // update parent
+          })
+          .catch((error) => {
+            console.error("Error updating objects:", error);
+          });
+      } else {
+        console.log("Error in deselecting...");
+      }
+    }
+
     setSelectedPolygonIndex(-1);
     setSelectedObjectPolygonIndex(-1);
     // setSelectedPolygon([]);
     // setSelectedObjectPolygon([]);
   }
 
-  const confirmSelectionButton = () => {
-    if (
-      (selectedPolygonIndex === -1 && selectedObjectPolygonIndex === -1) ||
-      selectedObjects.includes(selectedPolygonIndex) ||
-      selectedParts.includes(selectedObjectPolygonIndex)
-    ) {
-      return (
-        <Button
-          variant="contained"
-          disabled
-          sx={{
-            width: "34%",
-            fontFamily: "Open Sans",
-            fontWeight: 600,
-          }}
-        >
-          Confirm Selections
-        </Button>
-      );
-    } else {
-      return (
-        <Button
-          variant="contained"
-          sx={{
-            bgcolor: "#F9D68E",
-            color: "black",
-            width: "34%",
-            fontFamily: "Open Sans",
-            fontWeight: 600,
-          }}
-          onClick={() => {
-            confirmSelections();
-          }}
-        >
-          Confirm Selections
-        </Button>
-      );
-    }
-  };
+  // const confirmSelectionButton = () => {
+  //   if (
+  //     (selectedPolygonIndex === -1 && selectedObjectPolygonIndex === -1) ||
+  //     selectedObjects.includes(selectedPolygonIndex) ||
+  //     selectedParts.includes(selectedObjectPolygonIndex)
+  //   ) {
+  //     return (
+  //       <Button
+  //         variant="contained"
+  //         disabled
+  //         sx={{
+  //           width: "34%",
+  //           fontFamily: "Open Sans",
+  //           fontWeight: 600,
+  //         }}
+  //       >
+  //         Confirm Selections
+  //       </Button>
+  //     );
+  //   } else {
+  //     return (
+  //       <Button
+  //         variant="contained"
+  //         sx={{
+  //           bgcolor: "#F9D68E",
+  //           color: "black",
+  //           width: "34%",
+  //           fontFamily: "Open Sans",
+  //           fontWeight: 600,
+  //         }}
+  //         onClick={() => {
+  //           confirmSelections();
+  //         }}
+  //       >
+  //         Confirm Selections
+  //       </Button>
+  //     );
+  //   }
+  // };
 
   return (
     <div className="section section1">
-      <div className="counter">
-        <p className="selectedMaskText">
-          Number of parts selected:{" "}
-          {selectedParts.length + selectedObjects.length}
-        </p>
-      </div>
-      {/* <SelectTools
-        hidedPolygon={hidedPolygon}
-        setHidedPolygon={setHidedPolygon}
-        setAllPolygonVisible={() => {
-          d3.selectAll("polygon").style("display", "block");
-        }}
-      /> */}
+      <SelectTools
+        hideAllLabel={hideAllLabel}
+        setHideAllLabel={setHideAllLabel}
+      />
       <svg ref={svgRef}></svg>
-      <div className="submitButtonContainer submitButtonContainerSVG">
-        {confirmSelectionButton()}
-      </div>
+      <svg ref={svgRefParts}></svg>
     </div>
   );
 };

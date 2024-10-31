@@ -69,11 +69,6 @@ export type InteractiveLabelingProps = {
 };
 
 export type SelectToolsProps = {
-  hidedPolygon: d3.Selection<SVGPolygonElement, unknown, null, undefined>[][];
-  setHidedPolygon: React.Dispatch<
-    React.SetStateAction<
-      d3.Selection<SVGPolygonElement, unknown, null, undefined>[][]
-    >
-  >;
-  setAllPolygonVisible: () => void; // Function to make all polygons visible
+  hideAllLabel: boolean;
+  setHideAllLabel: React.Dispatch<React.SetStateAction<boolean>>;
 };
