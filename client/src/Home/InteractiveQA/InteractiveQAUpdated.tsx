@@ -2,13 +2,11 @@ import React from "react";
 import { useState } from "react";
 import { InteractiveLabelingProps } from "../../types";
 import FormGroup from "@mui/material/FormGroup";
-import FormControlLabel from "@mui/material/FormControlLabel";
 import "../Home.css"; // Importing the CSS
 import "./InteractiveQA.css"; // Importing the CSS
 import Button from "@mui/material/Button";
 import Pagination from "@mui/material/Pagination";
 import { deleteSelectedQuestion, putSelectedQuestion } from "./changeForm";
-import Radio from "@mui/material/Radio";
 import EditableFormControlLabel from "./EditableFormControlLabel";
 
 const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({

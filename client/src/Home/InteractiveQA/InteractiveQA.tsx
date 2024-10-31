@@ -62,6 +62,7 @@ const InteractiveQA: React.FC<InteractiveQAProps> = ({ id, parentFetch }) => {
         id={id}
         questions={questions}
         selectedQuestion={selectedQuestion}
+        setSelectedQuestion={setSelectedQuestion}
         fetchQuestions={fetchQuestions}
       />
     );
