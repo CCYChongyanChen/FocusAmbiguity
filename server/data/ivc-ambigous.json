@@ -2,13 +2,16 @@
   {
     "imageURL": "https://images.cocodataset.org/train2017/000000290234.jpg",
     "questions": [
-      "What parts of the image contain a phone ",
+      "What parts of the image contain a phone?",
       "What parts of the image might be involved in ensuring visibility?",
-      "What parts of the images",
-      ""
+      "What parts of the images are likely to be not involved in ensuring visibility?"
     ],
-    "selected_questions": [
+    "original_questions": [
+      "What parts of the image contain a phone?",
+      "What parts of the image might be involved in ensuring visibility?",
+      "What parts of the images are likely to be not involved in ensuring visibility?"
     ],
+    "selected_questions": [],
     "parts_polygons": {
       "polygons": [
         [
@@ -4935,8 +4938,7 @@
         ]
       ]
     ],
-    "selected_parts_polygons": [
-    ],
+    "selected_parts_polygons": [],
     "selected_objects_polygons": [],
     "objects_labels": [
       "car",
@@ -4954,6 +4956,11 @@
   {
     "imageURL": "https://images.cocodataset.org/train2017/000000521747.jpg",
     "questions": [
+      "placeholder1",
+      "What is this?",
+      "placeholder3"
+    ],
+    "original_questions": [
       "placeholder1",
       "What is this?",
       "placeholder3"

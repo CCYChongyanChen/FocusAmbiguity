@@ -3,20 +3,36 @@ import { useState } from "react";
 import { InteractiveLabelingProps } from "../../types";
 import FormGroup from "@mui/material/FormGroup";
 import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
 import "../Home.css"; // Importing the CSS
 import "./InteractiveQA.css"; // Importing the CSS
 import Button from "@mui/material/Button";
 import Pagination from "@mui/material/Pagination";
-import { deleteSelectedQuestion } from "./changeForm";
+import { deleteSelectedQuestion, putSelectedQuestion } from "./changeForm";
+import Radio from "@mui/material/Radio";
+import EditableFormControlLabel from "./EditableFormControlLabel";
 
 const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
   id,
   questions,
   selectedQuestion,
+  setSelectedQuestion,
   fetchQuestions,
 }) => {
   const [questionIndex, setQuestionIndex] = useState<number>(1);
+
+  function formHandler(e: any, index: number) {
+    const { checked } = e.target;
+    if (checked) {
+      // empty the selectedQuestion array if the question is already selected
+      if (selectedQuestion.length > 0) {
+        putSelectedQuestion([index], id).then(() => {
+          fetchQuestions();
+        });
+      }
+    } else {
+      setSelectedQuestion(selectedQuestion.filter((i) => i !== index));
+    }
+  }
 
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setQuestionIndex(value);
@@ -35,14 +51,27 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
         <div className="answerBox">
           <FormGroup>
             {questions.map((question, index) => (
-              <FormControlLabel
+              <EditableFormControlLabel
                 key={index}
-                control={<Checkbox />}
-                checked={selectedQuestion.includes(index)}
-                disabled
-                label={`Q${index + 1}: ${question}`} // Assuming the API returns a field `text` for each question
+                id={id}
+                editing={false}
+                index={index}
+                selectedQuestion={question}
+                isSelected={selectedQuestion.includes(index)}
+                formHandler={formHandler}
+                fetchQuestions={fetchQuestions}
               />
             ))}
+            <EditableFormControlLabel
+              key={questions.length}
+              id={id}
+              editing={false}
+              index={questions.length}
+              selectedQuestion={""}
+              isSelected={selectedQuestion.includes(questions.length)}
+              formHandler={formHandler}
+              fetchQuestions={fetchQuestions}
+            />
           </FormGroup>
         </div>
 
@@ -52,7 +81,7 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
             sx={{
               bgcolor: "#F9D68E",
               color: "black",
-              width: "10%",
+              width: "25%",
               fontFamily: "Open Sans",
               fontWeight: 600,
             }}
@@ -66,7 +95,7 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
               });
             }}
           >
-            Modify
+            Restore Default Questoins
           </Button>
         </div>
       </div>

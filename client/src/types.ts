@@ -55,13 +55,16 @@ export type EditableFormControlLabelProps = {
   editing: boolean;
   index: number;
   selectedQuestion: string;
+  isSelected: boolean;
   formHandler: (event: React.ChangeEvent<any>, index: number) => void;
+  fetchQuestions: () => void;
 };
 
 export type InteractiveLabelingProps = {
   id: number;
   questions: string[];
   selectedQuestion: number[];
+  setSelectedQuestion: React.Dispatch<React.SetStateAction<number[]>>;
   fetchQuestions: () => void;
 };
 

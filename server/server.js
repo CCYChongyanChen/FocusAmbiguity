@@ -131,6 +131,7 @@ app.delete("/api/users/:id/selectedQuestions", (req, res) => {
 
   if (userIndex !== -1) {
     data[userIndex].selected_questions = [];
+    data[userIndex].questions = data[userIndex].original_questions;
     writeData(data);
     res.json(data[userIndex]);
   } else {

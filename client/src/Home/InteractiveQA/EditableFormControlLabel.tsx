@@ -1,10 +1,5 @@
 import React, { useState } from "react";
-import {
-  TextField,
-  IconButton,
-  FormControlLabel,
-  Checkbox,
-} from "@mui/material";
+import { TextField, IconButton, FormControlLabel, Radio } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 import { EditableFormControlLabelProps } from "../../types";
@@ -15,7 +10,9 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
   editing,
   index,
   selectedQuestion,
+  isSelected,
   formHandler,
+  fetchQuestions,
 }) => {
   const [isEditing, setIsEditing] = useState(editing);
   const [labelValue, setLabelValue] = useState(selectedQuestion);
@@ -27,11 +24,36 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
       setLabelValue(inputValue);
     }
     setIsEditing(!isEditing);
-    putQuestion(id, index, inputValue);
+    putQuestion(id, index, inputValue).then(() => {
+      fetchQuestions();
+    });
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
+  };
+
+  const FormControl = () => {
+    // if question is selected then return disabled FormControlLabel
+    if (isSelected)
+      return (
+        <FormControlLabel
+          control={<Radio checked={true} />}
+          label={labelValue}
+          key={index}
+          onChange={(e) => formHandler(e, index)}
+          disabled
+        />
+      );
+    else
+      return (
+        <FormControlLabel
+          control={<Radio />}
+          label={labelValue}
+          key={index}
+          onChange={(e) => formHandler(e, index)}
+        />
+      );
   };
 
   return (
@@ -45,12 +67,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
           fullWidth
         />
       ) : (
-        <FormControlLabel
-          control={<Checkbox />}
-          label={labelValue}
-          key={index}
-          onChange={(e) => formHandler(e, index)}
-        />
+        <FormControl />
       )}
       <IconButton onClick={handleEditClick} size="small">
         {isEditing ? <CheckIcon /> : <EditIcon />}

@@ -13,14 +13,18 @@ const InteractiveQALanding: React.FC<InteractiveQALandingProps> = ({
 }) => {
   const [selectedQuestion, setSelectedQuestion] = useState<number[]>([]);
 
-  function formHandler(e: any, index: number) {
-    const { checked } = e.target;
-    if (checked) {
-      setSelectedQuestion([...selectedQuestion, index]);
-    } else {
-      setSelectedQuestion(selectedQuestion.filter((i) => i !== index));
-    }
-  }
+ function formHandler(e: any, index: number) {
+   const { checked } = e.target;
+   if (checked) {
+     // empty the selectedQuestion array if the question is already selected
+     if (selectedQuestion.length > 0) {
+       setSelectedQuestion([]);
+     }
+     setSelectedQuestion([...selectedQuestion, index]);
+   } else {
+     setSelectedQuestion(selectedQuestion.filter((i) => i !== index));
+   }
+ }
 
   useEffect(() => {
     console.log("Selected questions:", selectedQuestion);
@@ -49,7 +53,9 @@ const InteractiveQALanding: React.FC<InteractiveQALandingProps> = ({
                 editing={false}
                 index={index}
                 selectedQuestion={question}
+                isSelected={selectedQuestion.includes(index)}
                 formHandler={formHandler}
+                fetchQuestions={fetchQuestions}
               />
             ))}
 
@@ -59,7 +65,9 @@ const InteractiveQALanding: React.FC<InteractiveQALandingProps> = ({
               editing={false}
               index={questions.length}
               selectedQuestion={""}
+              isSelected={selectedQuestion.includes(questions.length)}
               formHandler={formHandler}
+              fetchQuestions={fetchQuestions}
             />
           </FormGroup>
         </div>
