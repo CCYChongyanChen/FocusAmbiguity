@@ -7,7 +7,7 @@ const url = require("url");
 const https = require("https");
 
 const app = express();
-const PORT = process.env.PORT || 4000;
+const PORT = 4000;
 
 // Middleware
 app.use(cors()); // Enable CORS for the frontend
@@ -128,10 +128,10 @@ app.put("/api/users/:id/modifyQuestion", (req, res) => {
 app.delete("/api/users/:id/selectedQuestions", (req, res) => {
   const data = readData();
   const userIndex = parseInt(req.params.id);
-
   if (userIndex !== -1) {
-    data[userIndex].selected_questions = [];
-    data[userIndex].questions = data[userIndex].original_questions;
+    const questionIndex = req.body.index;
+    data[userIndex].questions[questionIndex] =
+      data[userIndex].original_questions[questionIndex];
     writeData(data);
     res.json(data[userIndex]);
   } else {
