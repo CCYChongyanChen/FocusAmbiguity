@@ -93,7 +93,6 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
 
   const fetchQuestions = (id: number) => {
     const getDataURL = `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}`;
-    console.log("Fetching data from:", getDataURL);
     fetch(getDataURL) // Fetching the JSON file from the ablic directory
       .then((response) => response.json())
       .then((data: AmbData) => {
@@ -220,7 +219,6 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         .attr("y", 0);
 
       objectsPolygon.forEach((objects, groupIndex) => {
-        console.log("Objects:", objects);
         // parts is now an array of multiple segmentations (2D array)
         const polygons = objects.map((segmentations, partIndex) => {
           const points = [];
@@ -250,8 +248,6 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
 
         const [cx, cy] = d3.polygonCentroid(points);
 
-        console.log(hideAllLabel);
-
         if (!hideAllLabel) {
           svgObject
             .append("text")
@@ -273,17 +269,15 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
           polygons.forEach((polygon) => {
             polygon
               .attr("fill", segmentationColors[groupIndex])
-              .attr("stroke", "red")
-              .attr("opacity", 0.5);
+              .attr("opacity", 0.7)
+              .attr("stroke", "black")
+              .attr("stroke-dasharray", "10,5"); // Add dashed stroke (10px dash, 5px gap)
           });
         }
 
         polygons.forEach((polygon) => {
           polygon.on("click", function () {
-            console.log("Object clicked");
-            console.log("Selected object polygon index:", groupIndex);
             if (isPrevSelected && !isSelected) {
-              console.log("Object selected");
               // If the group was previously selected but not currently selected, select all
               polygons.forEach((poly) => {
                 poly
@@ -298,7 +292,6 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               setSelectedPolygonIndex(-1);
               isSelected = true;
             } else if (isPrevSelected && isSelected) {
-              console.log("Object selected");
               // Deselect the group
               polygons.forEach((poly) => {
                 poly.attr("stroke", "red").attr("opacity", 0.5);
@@ -307,7 +300,6 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               setSelectedObjectPolygonIndex(-1);
               isSelected = false;
             } else if (!isPrevSelected && !isSelected) {
-              console.log("Object not selected");
               // If the group was not previously selected, select all
               polygons.forEach((poly) => {
                 poly
@@ -322,11 +314,9 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               setSelectedPolygonIndex(-1);
               isSelected = true;
             } else {
-              console.log("Object deselected");
               // Deselect all polygons in the group
               polygons.forEach((poly) => {
                 poly
-                  .attr("fill", "transparent")
                   .attr("stroke", "white")
                   .attr("opacity", 1)
                   .attr("stroke-dasharray", "150,0"); // Add dashed stroke (5px dash, 5px gap)
@@ -388,7 +378,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               .attr("points", pointsString)
               .attr("fill", segmentationColors[groupIndex])
               .attr("stroke", "black")
-              .attr("opacity", 0.5)
+              .attr("opacity", 0.4)
               .attr("stroke-dasharray", "30,5"); // Add dashed stroke (5px dash, 5px gap)
           },
         );
@@ -433,13 +423,13 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         polygons.forEach((polygon) => {
           polygon.on("click", function () {
             if (isPrevSelected && !isSelected) {
-              console.log("Object clicked");
               // If the group was previously selected but not currently selected, select all
               polygons.forEach((poly) => {
-                poly
+                polygon
                   .attr("fill", segmentationColors[groupIndex])
-                  .attr("opacity", 0.7)
-                  .attr("stroke", "black")
+                  .attr("stroke", "white")
+                  .attr("stroke-dasharray", "10,5")
+                  .attr("opacity", 0.8); // Add dashed stroke (5px dash, 5px gap)
               });
               // setSelectedPolygon(polygons);
               setSelectedPolygonIndex(parts.groupIndex);
@@ -447,26 +437,25 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               setSelectedObjectPolygonIndex(-1);
               isSelected = true;
             } else if (isPrevSelected && isSelected) {
-              console.log("Object selected");
               // Deselect the group
               polygons.forEach((poly) => {
                 poly
-                  .attr("stroke", segmentationColors[groupIndex])
-                  .attr("opacity", 0.5)
-                  .attr("stroke-dasharray", "0,0"); // Add dashed stroke (5px dash, 5px gap)
+                  .attr("fill", segmentationColors[groupIndex])
+                  .attr("stroke", "black")
+                  .attr("opacity", 0.4)
+                  .attr("stroke-dasharray", "30,5"); // Add dashed stroke (5px dash, 5px gap)
               });
               // setSelectedPolygon([]);
               setSelectedPolygonIndex(-1);
               isSelected = false;
             } else if (!isPrevSelected && !isSelected) {
-              console.log("Object not selected");
               // If the group was not previously selected, select all
               polygons.forEach((poly) => {
                 poly
                   .attr("fill", segmentationColors[groupIndex])
-                  .attr("opacity", 0.7)
-                  .attr("stroke", "black")
-                  .attr("stroke-dasharray", "5,5"); // Add dashed stroke (5px dash, 5px gap)
+                  .attr("stroke", "white")
+                  .attr("stroke-dasharray", "10,5")
+                  .attr("opacity", 0.8); // Add dashed stroke (5px dash, 5px gap)
               });
               // setSelectedPolygon(polygons);
               setSelectedPolygonIndex(parts.groupIndex);
@@ -474,14 +463,13 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               setSelectedObjectPolygonIndex(-1);
               isSelected = true;
             } else {
-              console.log("Object deselected");
               // Deselect all polygons in the group
               polygons.forEach((poly) => {
                 poly
                   .attr("fill", segmentationColors[groupIndex])
-                  .attr("stroke", "white")
-                  .attr("opacity", 0.5)
-                  .attr("stroke-dasharray", "10,5"); // Add dashed stroke (5px dash, 5px gap)
+                  .attr("stroke", "black")
+                  .attr("opacity", 0.4)
+                  .attr("stroke-dasharray", "30,5"); // Add dashed stroke (5px dash, 5px gap)
               });
               // setSelectedPolygon([]);
               setSelectedPolygonIndex(-1);
@@ -495,17 +483,14 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
   }, [imageURL, imageDimensions, svgRef, hideAllLabel, svgRefParts]);
 
   function confirmSelections() {
-    console.log("Confirming selections...");
     if (
       selectedPolygonIndex !== -1 &&
       !selectedParts.includes(selectedPolygonIndex)
     ) {
-      console.log("selected parts", selectedParts);
       let newSelectedparts = [...selectedParts, selectedPolygonIndex];
       putSelectedParts(newSelectedparts, id)
         .then(() => {
           // Once the data is successfully sent, fetch the updated mask data
-          console.log("Parts updated. Fetching latest selected questions...");
           fetchQuestions(id); // Fetch the latest data again
           parentFetch(); // update parent
         })
@@ -536,7 +521,6 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
       selectedObjects.includes(selectedObjectPolygonIndex) ||
       selectedParts.includes(selectedPolygonIndex)
     ) {
-      console.log("Already selected, now deselecting...");
       if (selectedPolygonIndex !== -1) {
         let newSelectedparts = selectedParts.filter(
           (part) => part !== selectedPolygonIndex,
@@ -544,7 +528,6 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         putSelectedParts(newSelectedparts, id)
           .then(() => {
             // Once the data is successfully sent, fetch the updated mask data
-            console.log("Parts updated. Fetching latest selected questions...");
             fetchQuestions(id); // Fetch the latest data again
             parentFetch(); // update parent
           })

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TextField, IconButton, FormControlLabel, Radio } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
@@ -32,6 +32,12 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
   };
+
+  // when ID changes, update the label value
+  useEffect(() => {
+    setLabelValue(selectedQuestion);
+    setInputValue(selectedQuestion);
+  }, [selectedQuestion]);
 
   const FormControl = () => {
     // if question is selected then return disabled FormControlLabel

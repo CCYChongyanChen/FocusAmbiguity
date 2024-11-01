@@ -12,14 +12,14 @@ const InteractiveQA: React.FC<InteractiveQAProps> = ({ id, parentFetch }) => {
   const [hasUpdates, setHasUpdates] = useState<boolean>(false);
 
   const fetchQuestions = () => {
-    fetch(
-      `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}`,
-    )
+    fetch(`https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}`)
       .then((response) => response.json())
       .then((data: AmbData) => {
         setQuestions(data.questions);
         setSelectedQuestion(data.selected_questions);
         setLoading(false);
+
+        console.log("Questions:", data.questions);
 
         // Check if questions have been updated
         if (data.selected_questions.length > 0) {
@@ -37,7 +37,7 @@ const InteractiveQA: React.FC<InteractiveQAProps> = ({ id, parentFetch }) => {
 
   useEffect(() => {
     fetchQuestions();
-
+    console.log(questions);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 

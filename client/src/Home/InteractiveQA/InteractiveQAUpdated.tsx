@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import { InteractiveLabelingProps } from "../../types";
 import FormGroup from "@mui/material/FormGroup";
@@ -17,6 +17,13 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
   fetchQuestions,
 }) => {
   const [questionIndex, setQuestionIndex] = useState<number>(1);
+
+  // when questions are updated, fetch the questions again
+  useEffect(() => {
+    fetchQuestions();
+    console.log(questions);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
   function formHandler(e: any, index: number) {
     const { checked } = e.target;
