@@ -10,12 +10,14 @@ const InteractiveQA: React.FC<InteractiveQAProps> = ({ id, parentFetch }) => {
   const [selectedQuestion, setSelectedQuestion] = useState<number[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [hasUpdates, setHasUpdates] = useState<boolean>(false);
+  const [originalQuestions, setOriginalQuestions] = useState<string[]>([]);
 
   const fetchQuestions = () => {
     fetch(`https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}`)
       .then((response) => response.json())
       .then((data: AmbData) => {
         setQuestions(data.questions);
+        setOriginalQuestions(data.original_questions);
         setSelectedQuestion(data.selected_questions);
         setLoading(false);
 
@@ -61,6 +63,7 @@ const InteractiveQA: React.FC<InteractiveQAProps> = ({ id, parentFetch }) => {
       <InteractiveQAUpdated
         id={id}
         questions={questions}
+        originalQuestions={originalQuestions}
         selectedQuestion={selectedQuestion}
         setSelectedQuestion={setSelectedQuestion}
         fetchQuestions={fetchQuestions}

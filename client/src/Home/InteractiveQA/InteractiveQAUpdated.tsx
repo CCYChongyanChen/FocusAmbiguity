@@ -4,14 +4,14 @@ import { InteractiveLabelingProps } from "../../types";
 import FormGroup from "@mui/material/FormGroup";
 import "../Home.css"; // Importing the CSS
 import "./InteractiveQA.css"; // Importing the CSS
-import Button from "@mui/material/Button";
 import Pagination from "@mui/material/Pagination";
-import { deleteSelectedQuestion, putSelectedQuestion } from "./changeForm";
+import { putSelectedQuestion } from "./changeForm";
 import EditableFormControlLabel from "./EditableFormControlLabel";
 
 const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
   id,
   questions,
+  originalQuestions,
   selectedQuestion,
   setSelectedQuestion,
   fetchQuestions,
@@ -61,6 +61,7 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
                 id={id}
                 editing={false}
                 index={index}
+                originalQuestions={originalQuestions}
                 selectedQuestion={question}
                 isSelected={selectedQuestion.includes(index)}
                 formHandler={formHandler}
@@ -72,6 +73,7 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
               id={id}
               editing={false}
               index={questions.length}
+              originalQuestions={originalQuestions}
               selectedQuestion={""}
               isSelected={selectedQuestion.includes(questions.length)}
               formHandler={formHandler}
@@ -80,7 +82,7 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
           </FormGroup>
         </div>
 
-        <div className="submitButtonContainer">
+        {/* <div className="submitButtonContainer">
           <Button
             variant="contained"
             sx={{
@@ -102,7 +104,7 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
           >
             Restore Default Questoins
           </Button>
-        </div>
+        </div> */}
       </div>
       <div className="subsection subsection2">
         <div className="questionBox">

@@ -2,13 +2,15 @@ import React, { useEffect, useState } from "react";
 import { TextField, IconButton, FormControlLabel, Radio } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
+import UndoIcon from "@mui/icons-material/Undo";
 import { EditableFormControlLabelProps } from "../../types";
-import { putQuestion } from "./changeForm";
+import { deleteSelectedQuestion, putQuestion } from "./changeForm";
 
 const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
   id,
   editing,
   index,
+  originalQuestions,
   selectedQuestion,
   isSelected,
   formHandler,
@@ -37,7 +39,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
   useEffect(() => {
     setLabelValue(selectedQuestion);
     setInputValue(selectedQuestion);
-  }, [selectedQuestion]);
+  }, [selectedQuestion, isEditing]);
 
   const FormControl = () => {
     // if question is selected then return disabled FormControlLabel
@@ -62,6 +64,25 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
       );
   };
 
+  function undoButton() {
+    if (originalQuestions[index] !== selectedQuestion) {
+      return (
+        <IconButton
+          onClick={() => {
+            deleteSelectedQuestion(id).then(() => {
+              fetchQuestions();
+            });
+          }}
+          size="small"
+        >
+          <UndoIcon />
+        </IconButton>
+      );
+    } else {
+      return null;
+    }
+  }
+
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
       {isEditing ? (
@@ -78,6 +99,8 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
       <IconButton onClick={handleEditClick} size="small">
         {isEditing ? <CheckIcon /> : <EditIcon />}
       </IconButton>
+
+      {undoButton()}
     </div>
   );
 };

@@ -21,6 +21,7 @@ export type AmbData = {
   // width: number;
   // height: number;
   questions: string[];
+  original_questions: string[]
   selected_questions: number[];
   parts_polygons: partsPolygon;
   parts_masks: partsMasks[];
@@ -54,6 +55,7 @@ export type EditableFormControlLabelProps = {
   id: number;
   editing: boolean;
   index: number;
+  originalQuestions: string[];
   selectedQuestion: string;
   isSelected: boolean;
   formHandler: (event: React.ChangeEvent<any>, index: number) => void;
@@ -63,6 +65,7 @@ export type EditableFormControlLabelProps = {
 export type InteractiveLabelingProps = {
   id: number;
   questions: string[];
+  originalQuestions: string[];
   selectedQuestion: number[];
   setSelectedQuestion: React.Dispatch<React.SetStateAction<number[]>>;
   fetchQuestions: () => void;
