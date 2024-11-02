@@ -20,7 +20,7 @@ export async function deleteSelectedQuestion(id: number, index: number) {
     await fetch(
       `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}/selectedQuestions`,
       {
-        method: "DELETE",
+        method: "PUT",
         body: JSON.stringify({ index: index }),
       },
     );
