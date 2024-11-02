@@ -69,7 +69,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
       return (
         <IconButton
           onClick={() => {
-            deleteSelectedQuestion(id).then(() => {
+            deleteSelectedQuestion(id, index).then(() => {
               fetchQuestions();
             });
           }}
