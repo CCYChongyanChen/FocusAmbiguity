@@ -83,6 +83,19 @@ app.get("/api/users", (req, res) => {
   res.json(data);
 });
 
+app.put("/api/users/:id/selectedQuestions", (req, res) => {
+  const data = readData();
+  const userIndex = parseInt(req.params.id);
+
+  if (userIndex !== -1) {
+    data[userIndex].selected_questions = req.body.selected_questions;
+    writeData(data);
+    res.json(data[userIndex]);
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
+});
+
 app.get("/api/users/:id", (req, res) => {
   const data = readData();
   const user = data[parseInt(req.params.id)];
@@ -114,8 +127,8 @@ app.put("/api/users/:id/modifyQuestion", (req, res) => {
   }
 });
 
-app.put("/api/users/:id/selectedQuestions", (req, res) => {
-  console.log("Request received on /api/users/:id/selectedQuestions");
+app.put("/api/users/:id/discardQuestions", (req, res) => {
+  console.log("Request received on /api/users/:id/discardQuestions");
   const data = readData();
   const userIndex = parseInt(req.params.id);
   if (userIndex !== -1) {
