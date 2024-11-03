@@ -19,7 +19,7 @@ export async function deleteSelectedQuestion(id: number, index: number) {
   try {
     console.log("Deleting question", index);
     const request = await fetch(
-      `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}/selectedQuestions`,
+      `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}/discardQuestions`,
       {
         method: "PUT",
         body: JSON.stringify({ index: index }),
