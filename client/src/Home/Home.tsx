@@ -2,17 +2,20 @@ import React, { useState, useEffect } from "react";
 import "./Home.css"; // Importing the CSS
 import InteractiveSVG from "./InteractiveSVG/InteractiveSVG";
 import InteractiveQA from "./InteractiveQA/InteractiveQA";
+import { useSearchParams } from "react-router-dom";
 import { Button } from "@mui/material";
 import { AmbData } from "../types";
 
 const Home: React.FC = () => {
-  const [dataId, setDataId] = useState<number>(0);
+  const [searchParams, setSearchParams] = useSearchParams();
 
   const [loading, setLoading] = useState<boolean>(true);
   const [hasUpdates, setHasUpdates] = useState<boolean>(false);
   const [QAHasUpdate, setQAHasUpdate] = useState<boolean>(false);
 
   const [maximumLength, setMaximumLength] = useState<number>(0);
+  const initialUserIndex = parseInt(searchParams.get("userIndex") || "0");
+  const [dataId, setDataId] = useState<number>(initialUserIndex);
 
   // Function to fetch questions from the backend
   const fetchQuestions = () => {
@@ -58,6 +61,17 @@ const Home: React.FC = () => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dataId]);
+
+   useEffect(() => {
+     // Set the user index from query params when the component mounts or query changes
+     if (!isNaN(initialUserIndex)) {
+       setDataId(initialUserIndex);
+     }
+     fetchQuestions();
+     fetchLength();
+     // eslint-disable-next-line react-hooks/exhaustive-deps
+   }, [initialUserIndex]);
+
 
   if (loading) {
     return <div>Loading...</div>; // Show loading spinner or placeholder
@@ -115,14 +129,9 @@ const Home: React.FC = () => {
               fontWeight: 600,
             }}
             onClick={() => {
-              if (dataId + 1 === maximumLength) {
-                console.log(dataId);
-                console.log(maximumLength);
-                setDataId(0);
-              } else {
-                console.log(dataId);
-                setDataId(dataId + 1);
-              }
+              const newId = dataId + 1 === maximumLength ? 0 : dataId + 1;
+              setDataId(newId);
+              setSearchParams({ userIndex: newId.toString() }); // Update URL with new user index
             }}
           >
             Next Image

@@ -17,13 +17,16 @@ export async function putSelectedQuestion(questions: number[], id: number) {
 
 export async function deleteSelectedQuestion(id: number, index: number) {
   try {
-    await fetch(
+    console.log("Deleting question", index);
+    const request = await fetch(
       `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}/selectedQuestions`,
       {
         method: "PUT",
         body: JSON.stringify({ index: index }),
       },
     );
+    const response = await request.json();
+    console.log("Response:", response);
   } catch (error) {
     alert("Error deleting selected questions, please resubmit");
   }

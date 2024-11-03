@@ -11,7 +11,6 @@
       "What parts of the image might be involved in ensuring visibility?",
       "What parts of the images are likely to be not involved in ensuring visibility?"
     ],
-    "selected_questions": [],
     "parts_polygons": {
       "polygons": [
         [
@@ -4964,9 +4963,6 @@
       "placeholder1",
       "What is this?",
       "placeholder3"
-    ],
-    "selected_questions": [
-      1
     ],
     "parts_polygons": {
       "polygons": [
