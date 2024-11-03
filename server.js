@@ -7,7 +7,7 @@ const url = require("url");
 const https = require("https");
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 
 // Middleware
 app.use(cors()); // Enable CORS for the frontend
@@ -93,22 +93,11 @@ app.get("/api/users/:id", (req, res) => {
   }
 });
 
-app.put("/api/users/:id/selectedQuestions", (req, res) => {
-  const data = readData();
-  const userIndex = parseInt(req.params.id);
-
-  if (userIndex !== -1) {
-    data[userIndex].selected_questions = req.body.selected_questions;
-    writeData(data);
-    res.json(data[userIndex]);
-  } else {
-    res.status(404).json({ message: "User not found" });
-  }
-});
-
 app.put("/api/users/:id/modifyQuestion", (req, res) => {
+  console.log("Request received on /api/users/:id/modifyQuestion");
   const data = readData();
   const userIndex = parseInt(req.params.id);
+  console.log("userIndex", userIndex);
   if (userIndex !== -1) {
     let length = data[userIndex].questions.length;
     if (req.body.index < length) {
@@ -126,10 +115,12 @@ app.put("/api/users/:id/modifyQuestion", (req, res) => {
 });
 
 app.put("/api/users/:id/selectedQuestions", (req, res) => {
+  console.log("Request received on /api/users/:id/selectedQuestions");
   const data = readData();
   const userIndex = parseInt(req.params.id);
   if (userIndex !== -1) {
-    const questionIndex = parseInt(req.body.index);
+    const questionIndex = req.body.index;
+    console.log("questionIndex", questionIndex);
     data[userIndex].questions[questionIndex] =
       data[userIndex].original_questions[questionIndex];
     writeData(data);
@@ -165,9 +156,9 @@ app.put("/api/users/:id/selectedObjects", (req, res) => {
 });
 
 // Catch-all route to serve the React app's index.html (for React Router)
-// app.get("*", (req, res) => {
-//   res.sendFile(path.join(__dirname, "build", "index.html"));
-// });
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
 
 // Start the server
 app.listen(PORT, () => {
