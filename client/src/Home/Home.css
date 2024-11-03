@@ -36,6 +36,8 @@
   /* Sets the container height to 100% of the viewport */
   width: 90vw;
   /* Sets the container width to 100% of the viewport */
+
+  margin-top: -1%;
 }
 
 .lowerContainer2{
