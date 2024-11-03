@@ -15,6 +15,7 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
   selectedQuestion,
   setSelectedQuestion,
   fetchQuestions,
+  isAmbiguous,
 }) => {
   const [questionIndex, setQuestionIndex] = useState<number>(1);
 
@@ -23,14 +24,14 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
     fetchQuestions();
     console.log(questions);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, isAmbiguous]);
 
   function formHandler(e: any, index: number) {
     const { checked } = e.target;
     if (checked) {
       // empty the selectedQuestion array if the question is already selected
       if (selectedQuestion.length > 0) {
-        putSelectedQuestion([index], id).then(() => {
+        putSelectedQuestion([index], id, isAmbiguous).then(() => {
           fetchQuestions();
         });
       }
@@ -42,15 +43,16 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
   const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
     setQuestionIndex(value);
   };
+
+  const text = isAmbiguous
+    ? "Step 1: Please select, edit, or create an ambiguous question. There should be an ambiguity regarding what visual contents the question asks about."
+    : "Step 1: Please select, edit, or create an unambiguous question. There should be no ambiguity regarding what visual contents the question asks about.";
+
   return (
     <div className="section section2">
       <div className="subsection subsection1">
         <div className="questionBox">
-          <p className="question">
-            Step 1: Please select, edit, or create an ambiguous question. There
-            should be an ambiguity regarding what visual contents the question
-            asks about.{" "}
-          </p>
+          <p className="question">{text}</p>
         </div>
 
         <div className="answerBox">
@@ -66,6 +68,7 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
                 isSelected={selectedQuestion.includes(index)}
                 formHandler={formHandler}
                 fetchQuestions={fetchQuestions}
+                isAmbiguous={isAmbiguous}
               />
             ))}
             <EditableFormControlLabel
@@ -78,6 +81,7 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
               isSelected={selectedQuestion.includes(questions.length)}
               formHandler={formHandler}
               fetchQuestions={fetchQuestions}
+              isAmbiguous={isAmbiguous}
             />
           </FormGroup>
         </div>

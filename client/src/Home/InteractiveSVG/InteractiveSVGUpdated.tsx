@@ -9,6 +9,7 @@ import SelectTools from "./SelectTool";
 const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
   id,
   parentFetch,
+  isAmbiguous,
 }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const svgRefParts = useRef<SVGSVGElement | null>(null);
@@ -58,6 +59,8 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
 
   // Fetch the JSON data on component mount
 
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
   const segmentationColors = [
     "#FF6F61",
     "#6B5B95",
@@ -92,13 +95,13 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
   ];
 
   const fetchQuestions = (id: number) => {
-    const getDataURL = `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}`;
+    const getDataURL = `${API_BASE_URL}/api/users/${id}?ambiguous=${isAmbiguous}`;
     fetch(getDataURL) // Fetching the JSON file from the ablic directory
       .then((response) => response.json())
       .then((data: AmbData) => {
         if (data) {
           setImageURL(
-            `https://focusambiguity-f3d2d4c819b3.herokuapp.com/fetch-image?url=${encodeURIComponent(
+            `${API_BASE_URL}/fetch-image?url=${encodeURIComponent(
               data.imageURL,
             )}`,
           );
@@ -131,7 +134,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
   useEffect(() => {
     fetchQuestions(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, imageURL]);
+  }, [id, imageURL, isAmbiguous]);
 
   // useEffect(() => {
   //   const handleKeyPress = (event: KeyboardEvent) => {
@@ -480,7 +483,14 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imageURL, imageDimensions, svgRef, hideAllLabel, svgRefParts]);
+  }, [
+    imageURL,
+    imageDimensions,
+    svgRef,
+    hideAllLabel,
+    svgRefParts,
+    isAmbiguous,
+  ]);
 
   function confirmSelections() {
     if (
@@ -488,7 +498,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
       !selectedParts.includes(selectedPolygonIndex)
     ) {
       let newSelectedparts = [...selectedParts, selectedPolygonIndex];
-      putSelectedParts(newSelectedparts, id)
+      putSelectedParts(newSelectedparts, id, isAmbiguous)
         .then(() => {
           // Once the data is successfully sent, fetch the updated mask data
           fetchQuestions(id); // Fetch the latest data again
@@ -505,7 +515,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
       !selectedObjects.includes(selectedObjectPolygonIndex)
     ) {
       let newSelectedObjects = [...selectedObjects, selectedObjectPolygonIndex];
-      putSelectedObject(newSelectedObjects, id)
+      putSelectedObject(newSelectedObjects, id, isAmbiguous)
         .then(() => {
           // Once the data is successfully sent, fetch the updated mask data
           console.log("Objects updated. Fetching latest selected questions...");
@@ -525,7 +535,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         let newSelectedparts = selectedParts.filter(
           (part) => part !== selectedPolygonIndex,
         );
-        putSelectedParts(newSelectedparts, id)
+        putSelectedParts(newSelectedparts, id, isAmbiguous)
           .then(() => {
             // Once the data is successfully sent, fetch the updated mask data
             fetchQuestions(id); // Fetch the latest data again
@@ -538,7 +548,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         let newSelectedObjects = selectedObjects.filter(
           (object) => object !== selectedObjectPolygonIndex,
         );
-        putSelectedObject(newSelectedObjects, id)
+        putSelectedObject(newSelectedObjects, id, isAmbiguous)
           .then(() => {
             // Once the data is successfully sent, fetch the updated mask data
             console.log(

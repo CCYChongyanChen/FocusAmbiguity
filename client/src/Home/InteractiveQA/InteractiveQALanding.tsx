@@ -10,38 +10,42 @@ const InteractiveQALanding: React.FC<InteractiveQALandingProps> = ({
   id,
   questions,
   fetchQuestions,
+  isAmbiguous,
 }) => {
   const [selectedQuestion, setSelectedQuestion] = useState<number[]>([]);
 
- function formHandler(e: any, index: number) {
-   const { checked } = e.target;
-   if (checked) {
-     // empty the selectedQuestion array if the question is already selected
-     if (selectedQuestion.length > 0) {
-       setSelectedQuestion([]);
-     }
-     setSelectedQuestion([...selectedQuestion, index]);
-   } else {
-     setSelectedQuestion(selectedQuestion.filter((i) => i !== index));
-   }
- }
+  function formHandler(e: any, index: number) {
+    const { checked } = e.target;
+    if (checked) {
+      // empty the selectedQuestion array if the question is already selected
+      if (selectedQuestion.length > 0) {
+        setSelectedQuestion([]);
+      }
+      setSelectedQuestion([...selectedQuestion, index]);
+    } else {
+      setSelectedQuestion(selectedQuestion.filter((i) => i !== index));
+    }
+  }
+
+  // if isAmbiguous say Step 1: Please select, edit, or create an ambiguous question. There
+  // should be an ambiguity regarding what visual contents the question asks about.
+
+  const text = isAmbiguous
+    ? "Step 1: Please select, edit, or create an ambiguous question. There should be an ambiguity regarding what visual contents the question asks about."
+    : "Step 1: Please select, edit, or create an unambiguous question. There should be no ambiguity regarding what visual contents the question asks about.";
 
   useEffect(() => {
     console.log("Selected questions:", selectedQuestion);
-    putSelectedQuestion(selectedQuestion, id).then(() => {
+    putSelectedQuestion(selectedQuestion, id, isAmbiguous).then(() => {
       fetchQuestions();
     });
     //eslint-disable-next-line
-  }, [selectedQuestion, id]);
+  }, [selectedQuestion, id, isAmbiguous]);
   return (
     <div className="section section2">
       <div className="subsection subsection1">
         <div className="questionBox">
-          <p className="question">
-            Step 1: Please select, edit, or create an ambiguous question. There
-            should be an ambiguity regarding what visual contents the question
-            asks about.{" "}
-          </p>
+          <p className="question">{text}</p>
         </div>
 
         <div className="answerBox">
@@ -57,6 +61,7 @@ const InteractiveQALanding: React.FC<InteractiveQALandingProps> = ({
                 isSelected={selectedQuestion.includes(index)}
                 formHandler={formHandler}
                 fetchQuestions={fetchQuestions}
+                isAmbiguous={isAmbiguous}
               />
             ))}
 
@@ -70,6 +75,7 @@ const InteractiveQALanding: React.FC<InteractiveQALandingProps> = ({
               isSelected={selectedQuestion.includes(questions.length)}
               formHandler={formHandler}
               fetchQuestions={fetchQuestions}
+              isAmbiguous={isAmbiguous}
             />
           </FormGroup>
         </div>

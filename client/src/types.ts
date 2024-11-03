@@ -21,7 +21,7 @@ export type AmbData = {
   // width: number;
   // height: number;
   questions: string[];
-  original_questions: string[]
+  original_questions: string[];
   selected_questions: number[];
   parts_polygons: partsPolygon;
   parts_masks: partsMasks[];
@@ -38,17 +38,20 @@ export type InteractiveSVGProps = {
   id: number;
   parentFetch: () => void;
   updated: boolean;
+  isAmbiguous: boolean;
 };
 
 export type InteractiveQAProps = {
   id: number;
   parentFetch: () => void;
+  isAmbiguous: boolean;
 };
 
 export type InteractiveQALandingProps = {
   id: number;
   questions: string[];
   fetchQuestions: () => void;
+  isAmbiguous: boolean;
 };
 
 export type EditableFormControlLabelProps = {
@@ -60,6 +63,7 @@ export type EditableFormControlLabelProps = {
   isSelected: boolean;
   formHandler: (event: React.ChangeEvent<any>, index: number) => void;
   fetchQuestions: () => void;
+  isAmbiguous: boolean;
 };
 
 export type InteractiveLabelingProps = {
@@ -69,6 +73,7 @@ export type InteractiveLabelingProps = {
   selectedQuestion: number[];
   setSelectedQuestion: React.Dispatch<React.SetStateAction<number[]>>;
   fetchQuestions: () => void;
+  isAmbiguous: boolean;
 };
 
 export type SelectToolsProps = {

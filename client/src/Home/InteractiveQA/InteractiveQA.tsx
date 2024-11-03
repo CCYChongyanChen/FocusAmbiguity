@@ -5,15 +5,22 @@ import { AmbData, InteractiveQAProps } from "../../types";
 import InteractiveQALanding from "./InteractiveQALanding"; // Assume this component exists
 import InteractiveQAUpdated from "./InteractiveQAUpdated"; // Assume this component exists
 
-const InteractiveQA: React.FC<InteractiveQAProps> = ({ id, parentFetch }) => {
+const InteractiveQA: React.FC<InteractiveQAProps> = ({
+  id,
+  parentFetch,
+  isAmbiguous,
+}) => {
   const [questions, setQuestions] = useState<string[]>([]);
   const [selectedQuestion, setSelectedQuestion] = useState<number[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [hasUpdates, setHasUpdates] = useState<boolean>(false);
   const [originalQuestions, setOriginalQuestions] = useState<string[]>([]);
 
+  // Base URL from environment variable
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
   const fetchQuestions = () => {
-    fetch(`https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}`)
+    fetch(`${API_BASE_URL}/api/users/${id}?ambiguous=${isAmbiguous}`)
       .then((response) => response.json())
       .then((data: AmbData) => {
         setQuestions(data.questions);
@@ -41,7 +48,7 @@ const InteractiveQA: React.FC<InteractiveQAProps> = ({ id, parentFetch }) => {
     fetchQuestions();
     console.log(questions);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id]);
+  }, [id, isAmbiguous]);
 
   // Conditional rendering based on loading and updates
   if (loading) {
@@ -55,6 +62,7 @@ const InteractiveQA: React.FC<InteractiveQAProps> = ({ id, parentFetch }) => {
         id={id}
         questions={questions}
         fetchQuestions={fetchQuestions}
+        isAmbiguous={isAmbiguous}
       />
     );
   } else {
@@ -67,6 +75,7 @@ const InteractiveQA: React.FC<InteractiveQAProps> = ({ id, parentFetch }) => {
         selectedQuestion={selectedQuestion}
         setSelectedQuestion={setSelectedQuestion}
         fetchQuestions={fetchQuestions}
+        isAmbiguous={isAmbiguous}
       />
     );
   }

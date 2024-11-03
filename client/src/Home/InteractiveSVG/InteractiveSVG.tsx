@@ -9,12 +9,15 @@ const InteractiveSVG: React.FC<InteractiveSVGProps> = ({
   id,
   parentFetch,
   updated,
+  isAmbiguous,
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [hasUpdates, setHasUpdates] = useState<boolean>(false);
 
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
   const fetchQuestions = () => {
-    fetch(`https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}`)
+    fetch(`${API_BASE_URL}/api/users/${id}?ambiguous=${isAmbiguous}`)
       .then((response) => response.json())
       .then((data: AmbData) => {
         setLoading(false);
@@ -39,7 +42,7 @@ const InteractiveSVG: React.FC<InteractiveSVGProps> = ({
   useEffect(() => {
     fetchQuestions();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, updated]);
+  }, [id, updated, isAmbiguous]);
 
   if (loading) {
     return <div>Loading...</div>; // Show loading spinner or placeholder
@@ -51,6 +54,7 @@ const InteractiveSVG: React.FC<InteractiveSVGProps> = ({
         id={id}
         parentFetch={fetchQuestions}
         updated={false}
+        isAmbiguous={isAmbiguous}
       />
     );
   } else {
@@ -59,6 +63,7 @@ const InteractiveSVG: React.FC<InteractiveSVGProps> = ({
         id={id}
         parentFetch={fetchQuestions}
         updated={false}
+        isAmbiguous={isAmbiguous}
       />
     );
   }

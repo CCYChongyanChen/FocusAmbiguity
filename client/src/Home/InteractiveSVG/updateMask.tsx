@@ -1,7 +1,12 @@
-export async function putSelectedParts(masks: number[], id: number) {
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+export async function putSelectedParts(
+  masks: number[],
+  id: number,
+  isAmbiguous: boolean,
+) {
   try {
     await fetch(
-      `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}/selectedParts`,
+      `${API_BASE_URL}/api/users/${id}/selectedParts?ambiguous=${isAmbiguous}`,
       {
         method: "PUT",
         headers: {
@@ -15,10 +20,14 @@ export async function putSelectedParts(masks: number[], id: number) {
   }
 }
 
-export async function putSelectedObject(masks: number[], id: number) {
+export async function putSelectedObject(
+  masks: number[],
+  id: number,
+  isAmbiguous: boolean,
+) {
   try {
     await fetch(
-      `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}/selectedObjects`,
+      `${API_BASE_URL}/api/users/${id}/selectedObjects?ambiguous=${isAmbiguous}`,
       {
         method: "PUT",
         headers: {

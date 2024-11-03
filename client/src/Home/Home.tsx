@@ -5,6 +5,10 @@ import InteractiveQA from "./InteractiveQA/InteractiveQA";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@mui/material";
 import { AmbData } from "../types";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
+import Switch from "@mui/material/Switch";
+import { styled } from "@mui/material/styles";
 
 const Home: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,11 +21,60 @@ const Home: React.FC = () => {
   const initialUserIndex = parseInt(searchParams.get("userIndex") || "0");
   const [dataId, setDataId] = useState<number>(initialUserIndex);
 
+  const [isAmbiguous, setIsAmbiguous] = useState<boolean>(true); // New state for ambiguity
+
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+  const AntSwitch = styled(Switch)(({ theme }) => ({
+    width: 28,
+    height: 16,
+    padding: 0,
+    display: "flex",
+    "&:active": {
+      "& .MuiSwitch-thumb": {
+        width: 15,
+      },
+      "& .MuiSwitch-switchBase.Mui-checked": {
+        transform: "translateX(9px)",
+      },
+    },
+    "& .MuiSwitch-switchBase": {
+      padding: 2,
+      "&.Mui-checked": {
+        transform: "translateX(12px)",
+        color: "#fff",
+        "& + .MuiSwitch-track": {
+          opacity: 1,
+          backgroundColor: "#1890ff",
+          ...theme.applyStyles("dark", {
+            backgroundColor: "#177ddc",
+          }),
+        },
+      },
+    },
+    "& .MuiSwitch-thumb": {
+      boxShadow: "0 2px 4px 0 rgb(0 35 11 / 20%)",
+      width: 12,
+      height: 12,
+      borderRadius: 6,
+      transition: theme.transitions.create(["width"], {
+        duration: 200,
+      }),
+    },
+    "& .MuiSwitch-track": {
+      borderRadius: 16 / 2,
+      opacity: 1,
+      backgroundColor: "rgba(0,0,0,.25)",
+      boxSizing: "border-box",
+      ...theme.applyStyles("dark", {
+        backgroundColor: "rgba(255,255,255,.35)",
+      }),
+    },
+  }));
+
   // Function to fetch questions from the backend
   const fetchQuestions = () => {
-    fetch(
-      `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${dataId}`,
-    )
+    fetch(`${API_BASE_URL}/api/users/${dataId}?ambiguous=${isAmbiguous}`)
       .then((response) => response.json())
       .then((data: AmbData) => {
         setLoading(false);
@@ -44,7 +97,7 @@ const Home: React.FC = () => {
   };
 
   const fetchLength = () => {
-    fetch(`https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/`)
+    fetch(`${API_BASE_URL}/api/users/?ambiguous=${isAmbiguous}`)
       .then((response) => response.json())
       .then((data: AmbData[]) => {
         setMaximumLength(data.length);
@@ -58,20 +111,19 @@ const Home: React.FC = () => {
   useEffect(() => {
     fetchQuestions();
     fetchLength();
-
+    console.log(isAmbiguous);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataId]);
+  }, [dataId, isAmbiguous]);
 
-   useEffect(() => {
-     // Set the user index from query params when the component mounts or query changes
-     if (!isNaN(initialUserIndex)) {
-       setDataId(initialUserIndex);
-     }
-     fetchQuestions();
-     fetchLength();
-     // eslint-disable-next-line react-hooks/exhaustive-deps
-   }, [initialUserIndex]);
-
+  useEffect(() => {
+    // Set the user index from query params when the component mounts or query changes
+    if (!isNaN(initialUserIndex)) {
+      setDataId(initialUserIndex);
+    }
+    fetchQuestions();
+    fetchLength();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialUserIndex, isAmbiguous]);
 
   if (loading) {
     return <div>Loading...</div>; // Show loading spinner or placeholder
@@ -88,19 +140,24 @@ const Home: React.FC = () => {
             id={dataId}
             parentFetch={fetchQuestions}
             updated={QAHasUpdate}
+            isAmbiguous={isAmbiguous}
           />
-          <InteractiveQA id={dataId} parentFetch={fetchQuestions} />
+          <InteractiveQA
+            id={dataId}
+            parentFetch={fetchQuestions}
+            isAmbiguous={isAmbiguous}
+          />
         </div>
         <div className="lowerContainer">
-          <Button
-            disabled
-            variant="contained"
-            sx={{
-              fontFamily: "Open Sans",
-            }}
-          >
-            Next Image
-          </Button>
+          <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+            <Typography>unambiguous</Typography>
+            <AntSwitch
+              checked={isAmbiguous}
+              onChange={(e) => setIsAmbiguous(e.target.checked)} // Toggle state based on switch
+              inputProps={{ "aria-label": "ant design" }}
+            />
+            <Typography>ambiguous</Typography>
+          </Stack>
         </div>
       </div>
     );
@@ -115,27 +172,24 @@ const Home: React.FC = () => {
             id={dataId}
             parentFetch={fetchQuestions}
             updated={QAHasUpdate}
+            isAmbiguous={isAmbiguous}
           />
-          <InteractiveQA id={dataId} parentFetch={fetchQuestions} />
+          <InteractiveQA
+            id={dataId}
+            parentFetch={fetchQuestions}
+            isAmbiguous={isAmbiguous}
+          />
         </div>
         <div className="lowerContainer">
-          <Button
-            variant="contained"
-            sx={{
-              bgcolor: "#F9D68E",
-              color: "black",
-              width: "10%",
-              fontFamily: "Open Sans",
-              fontWeight: 600,
-            }}
-            onClick={() => {
-              const newId = dataId + 1 === maximumLength ? 0 : dataId + 1;
-              setDataId(newId);
-              setSearchParams({ userIndex: newId.toString() }); // Update URL with new user index
-            }}
-          >
-            Next Image
-          </Button>
+          <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+            <Typography>unambiguous</Typography>
+            <AntSwitch
+              checked={isAmbiguous}
+              onChange={(e) => setIsAmbiguous(e.target.checked)} // Toggle state based on switch
+              inputProps={{ "aria-label": "ant design" }}
+            />
+            <Typography>ambiguous</Typography>
+          </Stack>
         </div>
       </div>
     );

@@ -4,7 +4,10 @@ import "./InteractiveSVG.css"; // Importing the CSS
 import * as d3 from "d3";
 import { AmbData, InteractiveSVGProps } from "../../types";
 
-const InteractiveSVGLanding: React.FC<InteractiveSVGProps> = ({ id }) => {
+const InteractiveSVGLanding: React.FC<InteractiveSVGProps> = ({
+  id,
+  isAmbiguous,
+}) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const [imageURL, setImageURL] = React.useState<string>("");
   const [imageDimensions, setImageDimensions] = React.useState<{
@@ -12,16 +15,18 @@ const InteractiveSVGLanding: React.FC<InteractiveSVGProps> = ({ id }) => {
     height: number;
   }>({ width: 0, height: 0 });
 
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
   // Fetch the JSON data on component mount
   useEffect(() => {
     console.log("Fetching data for id:", id);
-    const getDataURL = `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}`;
+    const getDataURL = `${API_BASE_URL}/api/users/${id}?ambiguous=${isAmbiguous}`;
     fetch(getDataURL) // Fetching the JSON file from the public directory
       .then((response) => response.json())
       .then((data: AmbData) => {
         if (data) {
           setImageURL(
-            `https://focusambiguity-f3d2d4c819b3.herokuapp.com/fetch-image?url=${encodeURIComponent(
+            `${API_BASE_URL}/fetch-image?url=${encodeURIComponent(
               data.imageURL,
             )}`,
           );
@@ -40,7 +45,8 @@ const InteractiveSVGLanding: React.FC<InteractiveSVGProps> = ({ id }) => {
       .catch((error) => {
         console.error("Error fetching data:", error);
       });
-  }, [id, imageURL]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id, imageURL, isAmbiguous]);
 
   useEffect(() => {
     if (

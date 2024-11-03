@@ -15,6 +15,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
   isSelected,
   formHandler,
   fetchQuestions,
+  isAmbiguous,
 }) => {
   const [isEditing, setIsEditing] = useState(editing);
   const [labelValue, setLabelValue] = useState(selectedQuestion);
@@ -26,9 +27,11 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
       setLabelValue(inputValue);
     }
     setIsEditing(!isEditing);
-    putQuestion(id, index, inputValue).then(() => {
-      fetchQuestions();
-    });
+    if (inputValue.length !== 0) {
+      putQuestion(id, index, inputValue, isAmbiguous).then(() => {
+        fetchQuestions();
+      });
+    }
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,7 +42,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
   useEffect(() => {
     setLabelValue(selectedQuestion);
     setInputValue(selectedQuestion);
-  }, [selectedQuestion, isEditing]);
+  }, [selectedQuestion, isEditing, isAmbiguous]);
 
   const FormControl = () => {
     // if question is selected then return disabled FormControlLabel
@@ -70,7 +73,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
         <IconButton
           onClick={() => {
             console.log("Undoing question", index);
-            deleteSelectedQuestion(id, index).then(() => {
+            deleteSelectedQuestion(id, index, isAmbiguous).then(() => {
               fetchQuestions();
             });
           }}

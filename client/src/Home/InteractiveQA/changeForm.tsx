@@ -1,7 +1,13 @@
-export async function putSelectedQuestion(questions: number[], id: number) {
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+
+export async function putSelectedQuestion(
+  questions: number[],
+  id: number,
+  isAmbiguous: boolean,
+) {
   try {
     await fetch(
-      `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}/selectedQuestions`,
+      `${API_BASE_URL}/api/users/${id}/selectedQuestions?ambiguous=${isAmbiguous}`,
       {
         method: "PUT",
         headers: {
@@ -15,11 +21,15 @@ export async function putSelectedQuestion(questions: number[], id: number) {
   }
 }
 
-export async function deleteSelectedQuestion(id: number, index: number) {
+export async function deleteSelectedQuestion(
+  id: number,
+  index: number,
+  isAmbiguous: boolean,
+) {
   try {
     console.log("Deleting question", index);
     const request = await fetch(
-      `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}/discardQuestions`,
+      `${API_BASE_URL}/api/users/${id}/discardQuestions?ambiguous=${isAmbiguous}`,
       {
         method: "PUT",
         body: JSON.stringify({ index: index }),
@@ -32,10 +42,15 @@ export async function deleteSelectedQuestion(id: number, index: number) {
   }
 }
 
-export async function putQuestion(id: number, index: number, question: string) {
+export async function putQuestion(
+  id: number,
+  index: number,
+  question: string,
+  isAmbiguous: boolean,
+) {
   try {
     await fetch(
-      `https://focusambiguity-f3d2d4c819b3.herokuapp.com/api/users/${id}/modifyQuestion`,
+      `${API_BASE_URL}/api/users/${id}/modifyQuestion?ambiguous=${isAmbiguous}`,
       {
         method: "PUT",
         headers: {
