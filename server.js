@@ -14,10 +14,16 @@ app.use(cors()); // Enable CORS for the frontend
 app.use(bodyParser.json()); // Parse JSON bodies
 app.use("/images", express.static(path.join(__dirname, "public/images")));
 
-const dataFilePath = path.join(__dirname, "data/ivc-ambigous.json");
-
 // Helper function to read the JSON file
-const readData = () => {
+const readData = (ambiguous) => {
+  let dataFilePath = "";
+  ambiguous = ambiguous === "true";
+  if (ambiguous) {
+    dataFilePath = path.join(__dirname, "data/ivc-ambigous.json");
+  } else {
+    dataFilePath = path.join(__dirname, "data/ivc-unambigous.json");
+  }
+  console.log("dataFilePath", dataFilePath);
   const data = fs.readFileSync(dataFilePath);
   return JSON.parse(data);
 };
@@ -66,7 +72,14 @@ app.get("/fetch-image", (req, res) => {
 });
 
 // Helper function to write to the JSON file
-const writeData = (data) => {
+const writeData = (data, ambiguous) => {
+  let dataFilePath = "";
+  ambiguous = ambiguous === "true";
+  if (ambiguous) {
+    dataFilePath = path.join(__dirname, "data/ivc-ambigous.json");
+  } else {
+    dataFilePath = path.join(__dirname, "data/ivc-unambigous.json");
+  }
   fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2));
 };
 
@@ -79,17 +92,17 @@ app.get("/api", (req, res) => {
 });
 
 app.get("/api/users", (req, res) => {
-  const data = readData();
+  const data = readData(req.query.ambiguous);
   res.json(data);
 });
 
 app.put("/api/users/:id/selectedQuestions", (req, res) => {
-  const data = readData();
+  const data = readData(req.query.ambiguous);
   const userIndex = parseInt(req.params.id);
 
   if (userIndex !== -1) {
     data[userIndex].selected_questions = req.body.selected_questions;
-    writeData(data);
+    writeData(data, req.query.ambiguous);
     res.json(data[userIndex]);
   } else {
     res.status(404).json({ message: "User not found" });
@@ -97,8 +110,11 @@ app.put("/api/users/:id/selectedQuestions", (req, res) => {
 });
 
 app.get("/api/users/:id", (req, res) => {
-  const data = readData();
-  const user = data[parseInt(req.params.id)];
+  const data = readData(req.query.ambiguous);
+  const userIndex = parseInt(req.params.id);
+  const user = data[userIndex];
+  // const user = data[parseInt(req.params.id)];
+  // const ambiguous = data[req.params.isambiguous];
   if (user) {
     res.json(user);
   } else {
@@ -108,18 +124,18 @@ app.get("/api/users/:id", (req, res) => {
 
 app.put("/api/users/:id/modifyQuestion", (req, res) => {
   console.log("Request received on /api/users/:id/modifyQuestion");
-  const data = readData();
+  const data = readData(req.query.ambiguous);
   const userIndex = parseInt(req.params.id);
   console.log("userIndex", userIndex);
   if (userIndex !== -1) {
     let length = data[userIndex].questions.length;
     if (req.body.index < length) {
       data[userIndex].questions[req.body.index] = req.body.question;
-      writeData(data);
+      writeData(data, req.query.ambiguous);
       res.json(data[userIndex]);
     } else {
       data[userIndex].questions.push(req.body.question);
-      writeData(data);
+      writeData(data, req.query.ambiguous);
       res.json(data[userIndex]);
     }
   } else {
@@ -129,14 +145,14 @@ app.put("/api/users/:id/modifyQuestion", (req, res) => {
 
 app.put("/api/users/:id/discardQuestions", (req, res) => {
   console.log("Request received on /api/users/:id/discardQuestions");
-  const data = readData();
+  const data = readData(req.query.ambiguous);
   const userIndex = parseInt(req.params.id);
   if (userIndex !== -1) {
     const questionIndex = req.body.index;
     console.log("questionIndex", questionIndex);
     data[userIndex].questions[questionIndex] =
       data[userIndex].original_questions[questionIndex];
-    writeData(data);
+    writeData(data, req.query.ambiguous);
     res.json(data[userIndex]);
   } else {
     res.status(404).json({ message: "User not found" });
@@ -144,11 +160,11 @@ app.put("/api/users/:id/discardQuestions", (req, res) => {
 });
 
 app.put("/api/users/:id/selectedParts", (req, res) => {
-  const data = readData();
+  const data = readData(req.query.ambiguous);
   const userIndex = parseInt(req.params.id);
   if (userIndex !== -1) {
     data[userIndex].selected_parts_polygons = req.body.selected_parts_polygons;
-    writeData(data);
+    writeData(data, req.query.ambiguous);
     res.json(data[userIndex]);
   } else {
     res.status(404).json({ message: "User not found" });
@@ -156,12 +172,12 @@ app.put("/api/users/:id/selectedParts", (req, res) => {
 });
 
 app.put("/api/users/:id/selectedObjects", (req, res) => {
-  const data = readData();
+  const data = readData(req.query.ambiguous);
   const userIndex = parseInt(req.params.id);
   if (userIndex !== -1) {
     data[userIndex].selected_objects_polygons =
       req.body.selected_objects_polygons;
-    writeData(data);
+    writeData(data, req.query.ambiguous);
     res.json(data[userIndex]);
   } else {
     res.status(404).json({ message: "User not found" });
