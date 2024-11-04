@@ -3,49 +3,33 @@
   background-color: white;
   display: flex;
   flex-direction: column;
-  /* Vertically center the children */
   align-items: center;
-  /* Horizontally center the children */
-  /* Creates space between sections */
   height: 100vh;
-  /* Sets the container height to 100% of the viewport */
   width: 100vw;
-  /* Sets the container width to 100% of the viewport */
 }
 
 .upperContainer {
   display: flex;
   justify-content: space-around;
-  /* Vertically center the children */
   align-items: center;
-  /* Horizontally center the children */
-  /* Creates space between sections */
   height: 85vh;
-  /* Sets the container height to 100% of the viewport */
   width: 100vw;
-  /* Sets the container width to 100% of the viewport */
 }
 
 .lowerContainer {
   display: flex;
-  /* Vertically center the children */
   justify-content: flex-end;
-  /* Horizontally center the children */
-  /* Creates space between sections */
   height: 3.5vh;
-  /* Sets the container height to 100% of the viewport */
   width: 90vw;
-  /* Sets the container width to 100% of the viewport */
-
   margin-top: -1%;
 }
 
-.lowerContainer2{
+.lowerContainer2 {
   justify-content: flex-start;
-  /* Horizontally center the children */
   margin-top: 3vh;
   width: 95vw;
-  font-size: 20px;
+  font-size: clamp(5px, 3vh, 20px);
+  /* Responsive font size for lowerContainer2 */
   font-weight: 600;
   font-family: "Open Sans", sans-serif;
 }
@@ -57,43 +41,27 @@ body {
 /* Style for the individual sections */
 .section {
   display: flex;
-  /* Aligns the children horizontally */
   margin: 5px;
-  /* Adds spacing between sections */
   padding: 5px;
-  /* Adds padding inside sections */
   border-radius: 10px;
-  /* Rounded corners */
   text-align: center;
-  /* Center text inside sections */
   height: 68vh;
-  /* Sets the section width to 30% of the viewport */
 }
 
 .section1 {
   display: flex;
   flex-direction: column;
   border: 2px solid black;
-  /* Adds black stroke with width 4px */
   width: 33vw;
-  /* Sets the section width to 33% of the viewport */
   justify-content: space-evenly;
-  /* Vertically center the children */
   align-items: center;
-  /* Horizontally center the children */
 }
 
 .section2 {
   flex-direction: column;
-  /* Aligns the children vertically */
   align-items: center;
-  /* Horizontally center the children */
   justify-content: space-between;
-  /* Vertically center the children */
-  /* border: 2px solid black; */
-  /* Adds black stroke with width 4px */
   width: 62vw;
-  /* Sets the section width to 62% of the viewport */
 }
 
 .submitButtonContainer {
@@ -105,8 +73,9 @@ body {
 }
 
 .submitButton {
-  font-size: 16px;
-  font-weight: semi-bold;
+  font-size: clamp(12px, 1.5vw, 16px);
+  /* Responsive font size for submitButton */
+  font-weight: 600;
   cursor: pointer;
 }
 

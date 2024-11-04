@@ -17,7 +17,7 @@ const InteractiveSVG: React.FC<InteractiveSVGProps> = ({
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   const fetchQuestions = () => {
-    fetch(`${API_BASE_URL}/api/users/${id}?ambiguous=${isAmbiguous}`)
+    fetch(`${API_BASE_URL}/api/users/${id}?`)
       .then((response) => response.json())
       .then((data: AmbData) => {
         setLoading(false);

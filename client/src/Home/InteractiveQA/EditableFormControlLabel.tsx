@@ -48,22 +48,36 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
     // if question is selected then return disabled FormControlLabel
     if (isSelected)
       return (
-        <FormControlLabel
-          control={<Radio checked={true} />}
-          label={labelValue}
-          key={index}
-          onChange={(e) => formHandler(e, index)}
-          disabled
-        />
+        <div style={{ height: "5vh" }}>
+          <FormControlLabel
+            control={<Radio checked={true} />}
+            label={labelValue}
+            key={index}
+            onChange={(e) => formHandler(e, index)}
+            sx={{
+              "& .MuiFormControlLabel-label": {
+                fontSize: "clamp(10px, 1.5vw, 16px)", // Responsive font size for FormControlLabel
+              },
+            }}
+            disabled
+          />
+        </div>
       );
     else
       return (
-        <FormControlLabel
-          control={<Radio />}
-          label={labelValue}
-          key={index}
-          onChange={(e) => formHandler(e, index)}
-        />
+        <div style={{ height: "5vh" }}>
+          <FormControlLabel
+            control={<Radio />}
+            label={labelValue}
+            key={index}
+            onChange={(e) => formHandler(e, index)}
+            sx={{
+              "& .MuiFormControlLabel-label": {
+                fontSize: "clamp(10px, 1.5vw, 16px)", // Responsive font size for FormControlLabel
+              },
+            }}
+          />
+        </div>
       );
   };
 
@@ -88,13 +102,18 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
   }
 
   return (
-    <div style={{ display: "flex", alignItems: "center" }}>
+    <div style={{ display: "flex", alignItems: "center", height: "5vh" }}>
       {isEditing ? (
         <TextField
           value={inputValue}
           onChange={handleInputChange}
           size="small"
           variant="outlined"
+          sx={{
+            "& .MuiInputBase-input": {
+              fontSize: "clamp(10px, 1vw, 16px)", // Responsive font size for TextField input
+            },
+          }}
           fullWidth
         />
       ) : (
@@ -110,10 +129,3 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
 };
 
 export default EditableFormControlLabel;
-
-// <FormControlLabel
-//   key={index}
-//   control={<Checkbox />}
-//   label={`Q${index + 1}: ${question}`} // Assuming the API returns a field `text` for each question
-//   onChange={(e) => formHandler(e, index)}
-// />;

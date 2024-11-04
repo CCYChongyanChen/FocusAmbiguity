@@ -5,10 +5,6 @@ import InteractiveQA from "./InteractiveQA/InteractiveQA";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@mui/material";
 import { AmbData } from "../types";
-import Stack from "@mui/material/Stack";
-import Typography from "@mui/material/Typography";
-import Switch from "@mui/material/Switch";
-import { styled } from "@mui/material/styles";
 
 const Home: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -18,7 +14,7 @@ const Home: React.FC = () => {
   const [maximumLength, setMaximumLength] = useState<number>(0);
   const initialUserIndex = parseInt(searchParams.get("userIndex") || "0");
   const [dataId, setDataId] = useState<number>(initialUserIndex);
-  const [isAmbiguous, setIsAmbiguous] = useState<boolean>(true); // New state for ambiguity
+  const [isAmbiguous, setIsAmbiguous] = useState<boolean>(false); // New state for ambiguity
   const [selectedQuestions, setSelectedQuestions] = useState<number[]>([]);
   const [selectedObjectsPolygons, setSelectedObjectsPolygons] = useState<
     number[]
@@ -26,6 +22,18 @@ const Home: React.FC = () => {
   const [selectedPartsPolygons, setSelectedPartsPolygons] = useState<number[]>(
     [],
   );
+  const [selectedQuestionsAmbigous, setSelectedQuestionsAmbigous] = useState<
+    number[]
+  >([]);
+  const [selectedObjectsPolygonsAmbigous, setSelectedObjectsPolygonsAmbigous] =
+    useState<number[]>([]);
+
+  const [selectedPartsPolygonsAmbigous, setSelectedPartsPolygonsAmbigous] =
+    useState<number[]>([]);
+
+  const [buttonLabel, setButtonLabel] = useState<string>("Next");
+  const [buttonAction, setButtonAction] = useState<() => void>(() => () => {});
+  // Base URL from environment variable
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 
   // Define refs for each hidden input
@@ -34,13 +42,12 @@ const Home: React.FC = () => {
   const selectedQuestionsRef = useRef<HTMLInputElement>(null);
   const selectedObjectsPolygonsRef = useRef<HTMLInputElement>(null);
   const selectedPartsPolygonsRef = useRef<HTMLInputElement>(null);
+  const selectedQuestionsAmbigousRef = useRef<HTMLInputElement>(null);
+  const selectedObjectsPolygonsAmbigousRef = useRef<HTMLInputElement>(null);
+  const selectedPartsPolygonsAmbigousRef = useRef<HTMLInputElement>(null);
   const assignmentIdRef = useRef<HTMLInputElement>(null);
   const workerIdRef = useRef<HTMLInputElement>(null);
   const hitIdRef = useRef<HTMLInputElement>(null);
-
-  const AntSwitch = styled(Switch)(({ theme }) => ({
-    // Styled switch code here
-  }));
 
   const fetchQuestions = () => {
     fetch(`${API_BASE_URL}/api/users/${dataId}?ambiguous=${isAmbiguous}`)
@@ -49,12 +56,22 @@ const Home: React.FC = () => {
         setLoading(false);
         if (
           data.selected_questions.length > 0 &&
-          data.selected_parts_polygons.length > 0
+          data.selected_parts_polygons.length > 0 &&
+          !isAmbiguous
         ) {
           setHasUpdates(true); // Mark as updated
           setSelectedObjectsPolygons(data.selected_objects_polygons);
           setSelectedPartsPolygons(data.selected_parts_polygons);
           setSelectedQuestions(data.selected_questions);
+        } else if (
+          data.selected_questions.length > 0 &&
+          data.selected_parts_polygons.length > 0 &&
+          isAmbiguous
+        ) {
+          setQAHasUpdate(true);
+          setSelectedObjectsPolygonsAmbigous(data.selected_objects_polygons);
+          setSelectedPartsPolygonsAmbigous(data.selected_parts_polygons);
+          setSelectedQuestionsAmbigous(data.selected_questions);
         } else if (data.selected_questions.length > 0) {
           setQAHasUpdate(true);
         } else {
@@ -118,35 +135,51 @@ const Home: React.FC = () => {
           name="selected_parts_polygons"
           value="[]"
         />
+        <input
+          type="hidden"
+          ref={selectedQuestionsAmbigousRef}
+          name="selected_questions_ambiguous"
+          value="[]"
+        />
+        <input
+          type="hidden"
+          ref={selectedObjectsPolygonsAmbigousRef}
+          name="selected_objects_polygons_ambiguous"
+          value="[]"
+        />
+        <input
+          type="hidden"
+          ref={selectedPartsPolygonsAmbigousRef}
+          name="selected_parts_polygons_ambiguous"
+          value="[]"
+        />
       </form>
     );
   };
 
   const handleSubmit = () => {
     console.log("Submitting form");
-    console.log(selectedQuestions);
-    console.log(selectedObjectsPolygons);
-    console.log(selectedPartsPolygons);
     // Set ref values for selected data
-    if (selectedQuestionsRef.current) {
-      selectedQuestionsRef.current.value = JSON.stringify(selectedQuestions);
-    }
-    if (selectedObjectsPolygonsRef.current) {
-      selectedObjectsPolygonsRef.current.value = JSON.stringify(
-        selectedObjectsPolygons,
-      );
-    }
-    if (selectedPartsPolygonsRef.current) {
-      selectedPartsPolygonsRef.current.value = JSON.stringify(
-        selectedPartsPolygons,
-      );
-    }
-    if (dataIdRef.current) {
-      dataIdRef.current.value = String(dataId);
-    }
-    if (isAmbiguousRef.current) {
-      isAmbiguousRef.current.value = isAmbiguous ? "true" : "false";
-    }
+    selectedQuestionsRef.current!.value = JSON.stringify(selectedQuestions);
+    selectedObjectsPolygonsRef.current!.value = JSON.stringify(
+      selectedObjectsPolygons,
+    );
+    selectedPartsPolygonsRef.current!.value = JSON.stringify(
+      selectedPartsPolygons,
+    );
+    dataIdRef.current!.value = dataId.toString();
+
+    selectedQuestionsAmbigousRef.current!.value = JSON.stringify(
+      selectedQuestionsAmbigous,
+    );
+
+    selectedObjectsPolygonsAmbigousRef.current!.value = JSON.stringify(
+      selectedObjectsPolygonsAmbigous,
+    );
+
+    selectedPartsPolygonsAmbigousRef.current!.value = JSON.stringify(
+      selectedPartsPolygonsAmbigous,
+    );
 
     // Set ref values for URL parameters
     const urlParams = new URLSearchParams(window.location.search);
@@ -156,22 +189,58 @@ const Home: React.FC = () => {
         urlParams.get("assignmentId") || "ASSIGNMENT_ID_NOT_AVAILABLE";
     }
     if (workerIdRef.current) {
+      console.log(urlParams.get("workerId"));
       workerIdRef.current.value =
         urlParams.get("workerId") || "WORKER_ID_NOT_AVAILABLE";
     }
     if (hitIdRef.current) {
+      console.log(urlParams.get("hitId"));
       hitIdRef.current.value = urlParams.get("hitId") || "HIT_ID_NOT_AVAILABLE";
     }
 
     setTimeout(() => {
       (document.getElementById("mturk_form") as HTMLFormElement).submit();
-    }, 1000);
+    }, 10000);
   };
 
   useEffect(() => {
     fetchQuestions();
     fetchLength();
   }, [dataId, isAmbiguous]);
+
+  useEffect(() => {
+    // Determine button label and action based on current state
+    if (
+      !isAmbiguous &&
+      selectedObjectsPolygons.length > 0 &&
+      selectedPartsPolygons.length > 0 &&
+      selectedQuestions.length > 0
+    ) {
+      setButtonLabel("Next");
+      setButtonAction(() => () => setIsAmbiguous(true));
+    } else if (
+      isAmbiguous &&
+      selectedObjectsPolygonsAmbigous.length > 0 &&
+      selectedPartsPolygonsAmbigous.length > 0 &&
+      selectedQuestionsAmbigous.length > 0
+    ) {
+      setButtonLabel("Submit Form");
+      setButtonAction(() => handleSubmit);
+    } else {
+      setButtonLabel("Next");
+      setButtonAction(
+        () => () => alert("Please complete the selections in both sections."),
+      );
+    }
+  }, [
+    isAmbiguous,
+    selectedObjectsPolygons,
+    selectedPartsPolygons,
+    selectedQuestions,
+    selectedObjectsPolygonsAmbigous,
+    selectedPartsPolygonsAmbigous,
+    selectedQuestionsAmbigous,
+  ]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -181,17 +250,6 @@ const Home: React.FC = () => {
     <div className="container">
       <div className="lowerContainer lowerContainer2">
         <h1>IMG ID: ivc-{String(dataId).padStart(3, "0")}</h1>
-      </div>
-      <div className="lowerContainer">
-        <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-          <Typography>unambiguous</Typography>
-          <AntSwitch
-            checked={isAmbiguous}
-            onChange={(e) => setIsAmbiguous(e.target.checked)}
-            inputProps={{ "aria-label": "ant design" }}
-          />
-          <Typography>ambiguous</Typography>
-        </Stack>
       </div>
       <div className="upperContainer">
         <InteractiveSVG
@@ -217,12 +275,9 @@ const Home: React.FC = () => {
             fontFamily: "Open Sans",
             fontWeight: 600,
           }}
-          onClick={() => {
-            fetchQuestions();
-            handleSubmit();
-          }}
+          onClick={buttonAction}
         >
-          Submit
+          {buttonLabel}
         </Button>
       </div>
     </div>

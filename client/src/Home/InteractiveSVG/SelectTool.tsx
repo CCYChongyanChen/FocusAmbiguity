@@ -16,7 +16,7 @@ const SelectTools: React.FC<SelectToolsProps> = ({
           color: "black",
           width: "20%",
           fontFamily: "Open Sans",
-          fontSize: "11px",
+          fontSize: "clamp(5px, 1vw, 10px)",
           fontWeight: 600,
         }}
         onClick={() => {
