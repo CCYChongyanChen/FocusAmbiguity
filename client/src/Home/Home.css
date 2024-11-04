@@ -28,7 +28,7 @@
   justify-content: flex-start;
   margin-top: 3vh;
   width: 95vw;
-  font-size: clamp(5px, 3vh, 20px);
+  font-size: clamp(5px, 2vh, 20px);
   /* Responsive font size for lowerContainer2 */
   font-weight: 600;
   font-family: "Open Sans", sans-serif;

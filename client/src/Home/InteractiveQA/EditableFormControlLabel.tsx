@@ -50,13 +50,18 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
       return (
         <div style={{ height: "5vh" }}>
           <FormControlLabel
-            control={<Radio checked={true} />}
+            control={
+              <Radio
+                checked={true}
+                sx={{ fontSize: "clamp(4px, 2vh, 18px)" }}
+              />
+            }
             label={labelValue}
             key={index}
             onChange={(e) => formHandler(e, index)}
             sx={{
               "& .MuiFormControlLabel-label": {
-                fontSize: "clamp(10px, 1.5vw, 16px)", // Responsive font size for FormControlLabel
+                fontSize: "clamp(10px, 1.8vh, 20px)", // Responsive font size for FormControlLabel
               },
             }}
             disabled
@@ -67,13 +72,13 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
       return (
         <div style={{ height: "5vh" }}>
           <FormControlLabel
-            control={<Radio />}
+            control={<Radio sx={{ fontSize: "clamp(4px, 2vh, 18px)" }} />}
             label={labelValue}
             key={index}
             onChange={(e) => formHandler(e, index)}
             sx={{
               "& .MuiFormControlLabel-label": {
-                fontSize: "clamp(10px, 1.5vw, 16px)", // Responsive font size for FormControlLabel
+                fontSize: "clamp(10px, 1.8vh, 20px)", // Responsive font size for FormControlLabel
               },
             }}
           />
@@ -93,7 +98,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
           }}
           size="small"
         >
-          <UndoIcon />
+          <UndoIcon sx={{ fontSize: "clamp(4px, 2vh, 18px)" }} />
         </IconButton>
       );
     } else {
@@ -120,7 +125,11 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
         <FormControl />
       )}
       <IconButton onClick={handleEditClick} size="small">
-        {isEditing ? <CheckIcon /> : <EditIcon />}
+        {isEditing ? (
+          <CheckIcon sx={{ fontSize: "clamp(4px, 2vh, 18px)" }} />
+        ) : (
+          <EditIcon sx={{ fontSize: "clamp(4px, 2vh, 18px)" }} />
+        )}
       </IconButton>
 
       {undoButton()}

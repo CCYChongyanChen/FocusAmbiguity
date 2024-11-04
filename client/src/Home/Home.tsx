@@ -197,10 +197,7 @@ const Home: React.FC = () => {
       console.log(urlParams.get("hitId"));
       hitIdRef.current.value = urlParams.get("hitId") || "HIT_ID_NOT_AVAILABLE";
     }
-
-    setTimeout(() => {
-      (document.getElementById("mturk_form") as HTMLFormElement).submit();
-    }, 10000);
+    (document.getElementById("mturk_form") as HTMLFormElement).submit();
   };
 
   useEffect(() => {
