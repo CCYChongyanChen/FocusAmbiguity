@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.8a8c0142.css",
-    "main.js": "/static/js/main.d582c96e.js",
+    "main.css": "/static/css/main.e6c0cee7.css",
+    "main.js": "/static/js/main.e3e961ee.js",
     "static/js/453.419a5d54.chunk.js": "/static/js/453.419a5d54.chunk.js",
     "static/media/open-sans-latin-400-normal.woff2": "/static/media/open-sans-latin-400-normal.feb0d8644aca3df9fabf.woff2",
     "static/media/open-sans-cyrillic-ext-400-normal.woff2": "/static/media/open-sans-cyrillic-ext-400-normal.36a8d1fd05dda56813b9.woff2",
@@ -24,12 +24,12 @@
     "static/media/open-sans-greek-ext-400-normal.woff2": "/static/media/open-sans-greek-ext-400-normal.d4de70500674183ec495.woff2",
     "static/media/open-sans-greek-ext-400-normal.woff": "/static/media/open-sans-greek-ext-400-normal.3616aaac04f18fe72867.woff",
     "index.html": "/index.html",
-    "main.8a8c0142.css.map": "/static/css/main.8a8c0142.css.map",
-    "main.d582c96e.js.map": "/static/js/main.d582c96e.js.map",
+    "main.e6c0cee7.css.map": "/static/css/main.e6c0cee7.css.map",
+    "main.e3e961ee.js.map": "/static/js/main.e3e961ee.js.map",
     "453.419a5d54.chunk.js.map": "/static/js/453.419a5d54.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.8a8c0142.css",
-    "static/js/main.d582c96e.js"
+    "static/css/main.e6c0cee7.css",
+    "static/js/main.e3e961ee.js"
   ]
 }
