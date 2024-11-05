@@ -32,6 +32,9 @@ export async function deleteSelectedQuestion(
       `${API_BASE_URL}/api/users/${id}/discardQuestions?ambiguous=${isAmbiguous}`,
       {
         method: "PUT",
+        headers: {
+          "Content-Type": "application/json", // Add Content-Type header
+        },
         body: JSON.stringify({ index: index }),
       },
     );

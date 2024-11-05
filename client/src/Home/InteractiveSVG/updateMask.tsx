@@ -40,3 +40,19 @@ export async function putSelectedObject(
     alert("Error updating selected questions, please resubmit");
   }
 }
+
+export async function unSelectAll(id: number, isAmbiguous: boolean) {
+  try {
+    await fetch(
+      `${API_BASE_URL}/api/users/${id}/unSelectAll?ambiguous=${isAmbiguous}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
+  } catch (error) {
+    alert("Error updating selected questions, please resubmit");
+  }
+}

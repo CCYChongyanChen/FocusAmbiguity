@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../Home.css"; // Importing the CSS
 import "./InteractiveSVG.css"; // Importing the CSS
 import { AmbData, InteractiveSVGProps } from "../../types";
-import InteractiveSVGLanding from "./InteractiveSVGLanding";
+// import InteractiveSVGLanding from "./InteractiveSVGLanding";
 import InteractiveSVGUpdated from "./InteractiveSVGUpdated";
 
 const InteractiveSVG: React.FC<InteractiveSVGProps> = ({
@@ -48,25 +48,14 @@ const InteractiveSVG: React.FC<InteractiveSVGProps> = ({
     return <div>Loading...</div>; // Show loading spinner or placeholder
   }
 
-  if (!hasUpdates) {
-    return (
-      <InteractiveSVGLanding
-        id={id}
-        parentFetch={fetchQuestions}
-        updated={false}
-        isAmbiguous={isAmbiguous}
-      />
-    );
-  } else {
-    return (
-      <InteractiveSVGUpdated
-        id={id}
-        parentFetch={fetchQuestions}
-        updated={false}
-        isAmbiguous={isAmbiguous}
-      />
-    );
-  }
+  return (
+    <InteractiveSVGUpdated
+      id={id}
+      parentFetch={fetchQuestions}
+      updated={false}
+      isAmbiguous={isAmbiguous}
+    />
+  );
 };
 
 export default InteractiveSVG;

@@ -3,7 +3,7 @@ import "../Home.css"; // Importing the CSS
 import "./InteractiveSVG.css"; // Importing the CSS
 import * as d3 from "d3";
 import { AmbData, InteractiveSVGProps } from "../../types";
-import { putSelectedObject, putSelectedParts } from "./updateMask";
+import { putSelectedObject, putSelectedParts, unSelectAll } from "./updateMask";
 import SelectTools from "./SelectTool";
 
 const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
@@ -537,6 +537,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         );
         putSelectedParts(newSelectedparts, id, isAmbiguous)
           .then(() => {
+            console.log("Parts updated. Fetching latest selected questions...");
             // Once the data is successfully sent, fetch the updated mask data
             fetchQuestions(id); // Fetch the latest data again
             parentFetch(); // update parent
@@ -616,6 +617,12 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
       <SelectTools
         hideAllLabel={hideAllLabel}
         setHideAllLabel={setHideAllLabel}
+        unSelectAll={() => {
+          unSelectAll(id, isAmbiguous).then(() => {
+            fetchQuestions(id);
+            parentFetch();
+          });
+        }}
       />
       <svg ref={svgRef}></svg>
       <svg ref={svgRefParts}></svg>

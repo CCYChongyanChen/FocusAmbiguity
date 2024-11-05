@@ -28,8 +28,6 @@ const InteractiveQA: React.FC<InteractiveQAProps> = ({
         setSelectedQuestion(data.selected_questions);
         setLoading(false);
 
-        console.log("Questions:", data.questions);
-
         // Check if questions have been updated
         if (data.selected_questions.length > 0) {
           setHasUpdates(true); // Mark as updated
@@ -46,7 +44,6 @@ const InteractiveQA: React.FC<InteractiveQAProps> = ({
 
   useEffect(() => {
     fetchQuestions();
-    console.log(questions);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, isAmbiguous]);
 

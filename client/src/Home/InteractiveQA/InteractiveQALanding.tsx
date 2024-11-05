@@ -30,15 +30,26 @@ const InteractiveQALanding: React.FC<InteractiveQALandingProps> = ({
   // if isAmbiguous say Step 1: Please select, edit, or create an ambiguous question. There
   // should be an ambiguity regarding what visual contents the question asks about.
 
-  const text = isAmbiguous
-    ? "Step 1: Please select, edit, or create an ambiguous question. There should be an ambiguity regarding what visual contents the question asks about."
-    : "Step 1: Please select, edit, or create an unambiguous question. There should be no ambiguity regarding what visual contents the question asks about.";
+  const text = isAmbiguous ? (
+    <p>
+      Step 1: Please select, edit, or create an{" "}
+      <span className="question-red">ambiguous</span> question. There should be
+      an ambiguity regarding what visual contents the question asks about.
+    </p>
+  ) : (
+    <p>
+      Step 1: Please select, edit, or create an{" "}
+      <span className="question-blue">unambiguous</span> question. There should
+      be no ambiguity regarding what visual contents the question asks about.
+    </p>
+  );
 
   useEffect(() => {
-    console.log("Selected questions:", selectedQuestion);
-    putSelectedQuestion(selectedQuestion, id, isAmbiguous).then(() => {
-      fetchQuestions();
-    });
+    if (selectedQuestion.length > 0) {
+      putSelectedQuestion(selectedQuestion, id, isAmbiguous).then(() => {
+        fetchQuestions();
+      });
+    }
     //eslint-disable-next-line
   }, [selectedQuestion, id, isAmbiguous]);
   return (

@@ -68,8 +68,14 @@ p.bold {
 }
 
 .question-blue {
-  color: #0852f8;
-  font-size: clamp(15px, 2vh, 20px);
+  color: #228B22;
+  font-size: clamp(15px, 2.5vh, 22px);
+  /* Responsive font size for blue question text */
+}
+
+.question-red {
+  color: #F08080;
+  font-size: clamp(15px, 2.5vh, 22px);
   /* Responsive font size for blue question text */
 }
 

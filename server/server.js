@@ -7,7 +7,7 @@ const url = require("url");
 const https = require("https");
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 4000;
 
 // Middleware
 app.use(cors()); // Enable CORS for the frontend
@@ -23,7 +23,6 @@ const readData = (ambiguous) => {
   } else {
     dataFilePath = path.join(__dirname, "data/ivc-unambigous.json");
   }
-  console.log("dataFilePath", dataFilePath);
   const data = fs.readFileSync(dataFilePath);
   return JSON.parse(data);
 };
@@ -99,7 +98,7 @@ app.get("/api/users", (req, res) => {
 app.put("/api/users/:id/selectedQuestions", (req, res) => {
   const data = readData(req.query.ambiguous);
   const userIndex = parseInt(req.params.id);
-
+  console.log("userIndex", userIndex);
   if (userIndex !== -1) {
     data[userIndex].selected_questions = req.body.selected_questions;
     writeData(data, req.query.ambiguous);
@@ -177,6 +176,19 @@ app.put("/api/users/:id/selectedObjects", (req, res) => {
   if (userIndex !== -1) {
     data[userIndex].selected_objects_polygons =
       req.body.selected_objects_polygons;
+    writeData(data, req.query.ambiguous);
+    res.json(data[userIndex]);
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
+});
+
+app.put("/api/users/:id/unSelectAll", (req, res) => {
+  const data = readData(req.query.ambiguous);
+  const userIndex = parseInt(req.params.id);
+  if (userIndex !== -1) {
+    data[userIndex].selected_parts_polygons = [];
+    data[userIndex].selected_objects_polygons = [];
     writeData(data, req.query.ambiguous);
     res.json(data[userIndex]);
   } else {

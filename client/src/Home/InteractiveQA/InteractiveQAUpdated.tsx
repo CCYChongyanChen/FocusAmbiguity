@@ -22,7 +22,6 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
   // when questions are updated, fetch the questions again
   useEffect(() => {
     fetchQuestions();
-    console.log(questions);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, isAmbiguous]);
 
@@ -32,6 +31,7 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
       // empty the selectedQuestion array if the question is already selected
       if (selectedQuestion.length > 0) {
         putSelectedQuestion([index], id, isAmbiguous).then(() => {
+          console.log("Selected questions:", index);
           fetchQuestions();
         });
       }
@@ -44,9 +44,19 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
     setQuestionIndex(value);
   };
 
-  const text = isAmbiguous
-    ? "Step 1: Please select, edit, or create an ambiguous question. There should be an ambiguity regarding what visual contents the question asks about."
-    : "Step 1: Please select, edit, or create an unambiguous question. There should be no ambiguity regarding what visual contents the question asks about.";
+  const text = isAmbiguous ? (
+    <p>
+      Step 1: Please select, edit, or create an{" "}
+      <span className="question-red">ambiguous</span> question. There should be
+      an ambiguity regarding what visual contents the question asks about.
+    </p>
+  ) : (
+    <p>
+      Step 1: Please select, edit, or create an{" "}
+      <span className="question-blue">unambiguous</span> question. There should
+      be no ambiguity regarding what visual contents the question asks about.
+    </p>
+  );
 
   return (
     <div className="section section2">
@@ -120,7 +130,12 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
         <div className="questionBox questionBoxPart2">
           <p className="question">
             Select on all the regions the question "
-            <span key={questionIndex} className="question question-blue">
+            <span
+              key={questionIndex}
+              className={`question ${
+                isAmbiguous ? "question-red" : "question-blue"
+              }`}
+            >
               {questions[selectedQuestion[questionIndex - 1]]}
             </span>
             " is referring to.

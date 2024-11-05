@@ -79,4 +79,5 @@ export type InteractiveLabelingProps = {
 export type SelectToolsProps = {
   hideAllLabel: boolean;
   setHideAllLabel: React.Dispatch<React.SetStateAction<boolean>>;
+  unSelectAll: () => void;
 };

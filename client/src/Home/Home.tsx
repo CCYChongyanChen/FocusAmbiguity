@@ -5,6 +5,7 @@ import InteractiveQA from "./InteractiveQA/InteractiveQA";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@mui/material";
 import { AmbData } from "../types";
+import { timeout } from "d3";
 
 const Home: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -31,6 +32,11 @@ const Home: React.FC = () => {
   const [selectedPartsPolygonsAmbigous, setSelectedPartsPolygonsAmbigous] =
     useState<number[]>([]);
 
+  const [startTime, setStartTime] = useState<Date | null>(null); // Track start time
+
+  const [questions, setQuestions] = useState<string[]>([]);
+  const [ambigousQuestions, setAmbigousQuestions] = useState<string[]>([]);
+
   const [buttonLabel, setButtonLabel] = useState<string>("Next");
   const [buttonAction, setButtonAction] = useState<() => void>(() => () => {});
   // Base URL from environment variable
@@ -48,30 +54,31 @@ const Home: React.FC = () => {
   const assignmentIdRef = useRef<HTMLInputElement>(null);
   const workerIdRef = useRef<HTMLInputElement>(null);
   const hitIdRef = useRef<HTMLInputElement>(null);
+  const userTimeRef = useRef<HTMLInputElement>(null);
+
+  const [buttonDisabled, setButtonDisabled] = useState<boolean>(false);
+  const [labelsParts, setLabelsParts] = useState<string[]>([]);
+  const [labelsObjects, setLabelsObjects] = useState<string[]>([]);
 
   const fetchQuestions = () => {
     fetch(`${API_BASE_URL}/api/users/${dataId}?ambiguous=${isAmbiguous}`)
       .then((response) => response.json())
       .then((data: AmbData) => {
         setLoading(false);
-        if (
-          data.selected_questions.length > 0 &&
-          data.selected_parts_polygons.length > 0 &&
-          !isAmbiguous
-        ) {
-          setHasUpdates(true); // Mark as updated
+        if (data.selected_questions.length > 0 && !isAmbiguous) {
+          setQAHasUpdate(true); // Mark as updated
           setSelectedObjectsPolygons(data.selected_objects_polygons);
           setSelectedPartsPolygons(data.selected_parts_polygons);
           setSelectedQuestions(data.selected_questions);
-        } else if (
-          data.selected_questions.length > 0 &&
-          data.selected_parts_polygons.length > 0 &&
-          isAmbiguous
-        ) {
+          setQuestions(data.questions);
+          setLabelsParts(data.parts_labels);
+          setLabelsObjects(data.objects_labels);
+        } else if (data.selected_questions.length > 0 && isAmbiguous) {
           setQAHasUpdate(true);
           setSelectedObjectsPolygonsAmbigous(data.selected_objects_polygons);
           setSelectedPartsPolygonsAmbigous(data.selected_parts_polygons);
           setSelectedQuestionsAmbigous(data.selected_questions);
+          setAmbigousQuestions(data.questions);
         } else if (data.selected_questions.length > 0) {
           setQAHasUpdate(true);
         } else {
@@ -82,6 +89,18 @@ const Home: React.FC = () => {
         console.error("Error fetching questions:", error);
         setLoading(false);
       });
+  };
+
+  const calculateTotalTime = () => {
+    if (startTime) {
+      const endTime = new Date();
+      const timeDifference = Math.floor(
+        (endTime.getTime() - startTime.getTime()) / 1000,
+      ); // in seconds
+      console.log(`Total time spent: ${timeDifference} seconds`);
+      return timeDifference;
+    }
+    return 0;
   };
 
   const fetchLength = () => {
@@ -111,12 +130,6 @@ const Home: React.FC = () => {
           value="https://workersandbox.mturk.com"
         />
         <input type="hidden" ref={dataIdRef} name="dataId" value={dataId} />
-        <input
-          type="hidden"
-          ref={isAmbiguousRef}
-          name="isAmbiguous"
-          value={isAmbiguous ? "true" : "false"}
-        />
         <input
           type="hidden"
           ref={selectedQuestionsRef}
@@ -153,14 +166,77 @@ const Home: React.FC = () => {
           name="selected_parts_polygons_ambiguous"
           value="[]"
         />
+        <input
+          type="hidden"
+          ref={userTimeRef}
+          name="user_answer_time"
+          value="0"
+        />
       </form>
     );
   };
 
+  useEffect(() => {
+    fetchQuestions();
+    fetchLength();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dataId, isAmbiguous]);
+
+  useEffect(() => {
+    setStartTime(new Date()); // Record start time when component mounts
+  }, []);
+
+  useEffect(() => {
+    if (
+      !isAmbiguous &&
+      (selectedObjectsPolygons.length > 0 ||
+        selectedPartsPolygons.length > 0) &&
+      selectedQuestions.length > 0
+    ) {
+      setButtonLabel("Next");
+      setButtonDisabled(false);
+      setButtonAction(() => () => setIsAmbiguous(true));
+    } else if (
+      isAmbiguous &&
+      (selectedObjectsPolygonsAmbigous.length > 0 ||
+        selectedPartsPolygonsAmbigous.length > 0) &&
+      selectedQuestionsAmbigous.length > 0
+    ) {
+      setButtonLabel("Submit Form");
+      setButtonDisabled(false);
+      setButtonAction(() => handleSubmit);
+    } else {
+      setButtonDisabled(true);
+      setButtonLabel("Next");
+      setButtonAction(
+        () => () => alert("Please complete the selections in both sections."),
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    isAmbiguous,
+    selectedQuestions,
+    selectedObjectsPolygons,
+    selectedPartsPolygons,
+    selectedQuestionsAmbigous,
+    selectedObjectsPolygonsAmbigous,
+    selectedPartsPolygonsAmbigous,
+  ]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   const handleSubmit = () => {
-    console.log("Submitting form");
+    const totalTimeSpent = calculateTotalTime();
+    userTimeRef.current!.value = totalTimeSpent.toString();
+    console.log("Submitting form...");
+    console.log("Total time spent:", totalTimeSpent);
     // Set ref values for selected data
-    selectedQuestionsRef.current!.value = JSON.stringify(selectedQuestions);
+    selectedQuestionsRef.current!.value = JSON.stringify({
+      index: selectedQuestions,
+      questions: questions[selectedQuestions[0]],
+    });
     selectedObjectsPolygonsRef.current!.value = JSON.stringify(
       selectedObjectsPolygons,
     );
@@ -169,9 +245,10 @@ const Home: React.FC = () => {
     );
     dataIdRef.current!.value = dataId.toString();
 
-    selectedQuestionsAmbigousRef.current!.value = JSON.stringify(
-      selectedQuestionsAmbigous,
-    );
+    selectedQuestionsAmbigousRef.current!.value = JSON.stringify({
+      index: selectedQuestionsAmbigous,
+      questions: ambigousQuestions[selectedQuestionsAmbigous[0]],
+    });
 
     selectedObjectsPolygonsAmbigousRef.current!.value = JSON.stringify(
       selectedObjectsPolygonsAmbigous,
@@ -197,51 +274,12 @@ const Home: React.FC = () => {
       console.log(urlParams.get("hitId"));
       hitIdRef.current.value = urlParams.get("hitId") || "HIT_ID_NOT_AVAILABLE";
     }
-    (document.getElementById("mturk_form") as HTMLFormElement).submit();
+    timeout(() => {
+      console.log("Submitting form...");
+      (document.getElementById("mturk_form") as HTMLFormElement).submit();
+    }, 1000);
+    // (document.getElementById("mturk_form") as HTMLFormElement).submit();
   };
-
-  useEffect(() => {
-    fetchQuestions();
-    fetchLength();
-  }, [dataId, isAmbiguous]);
-
-  useEffect(() => {
-    // Determine button label and action based on current state
-    if (
-      !isAmbiguous &&
-      selectedObjectsPolygons.length > 0 &&
-      selectedPartsPolygons.length > 0 &&
-      selectedQuestions.length > 0
-    ) {
-      setButtonLabel("Next");
-      setButtonAction(() => () => setIsAmbiguous(true));
-    } else if (
-      isAmbiguous &&
-      selectedObjectsPolygonsAmbigous.length > 0 &&
-      selectedPartsPolygonsAmbigous.length > 0 &&
-      selectedQuestionsAmbigous.length > 0
-    ) {
-      setButtonLabel("Submit Form");
-      setButtonAction(() => handleSubmit);
-    } else {
-      setButtonLabel("Next");
-      setButtonAction(
-        () => () => alert("Please complete the selections in both sections."),
-      );
-    }
-  }, [
-    isAmbiguous,
-    selectedObjectsPolygons,
-    selectedPartsPolygons,
-    selectedQuestions,
-    selectedObjectsPolygonsAmbigous,
-    selectedPartsPolygonsAmbigous,
-    selectedQuestionsAmbigous,
-  ]);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div className="container">
@@ -261,21 +299,59 @@ const Home: React.FC = () => {
           isAmbiguous={isAmbiguous}
         />
       </div>
+
       {AmTurkForm()}
+
       <div className="lowerContainer">
-        <Button
-          variant="contained"
-          sx={{
-            bgcolor: "#F9D68E",
-            color: "black",
-            width: "10%",
-            fontFamily: "Open Sans",
-            fontWeight: 600,
-          }}
-          onClick={buttonAction}
-        >
-          {buttonLabel}
-        </Button>
+        <div className="lowerContainerLeft">
+          <div className="lowerContainerLeftUp">
+            <div className="leftUpItem">
+              <p>Objects: {labelsObjects.join(", ")}</p>
+            </div>
+            <div className="leftUpItem">
+              <p>Parts: {labelsParts.join(", ")}</p>
+            </div>
+          </div>{" "}
+        </div>
+        <div className="lowerContainerRight">
+          <div className="lowerContainerLeftDown">
+            {isAmbiguous && (
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: "#F9D68E",
+                  color: "black",
+                  width: "100%",
+                  height: "100%",
+                  fontFamily: "Open Sans",
+                  fontWeight: 600,
+                }}
+                onClick={() => {
+                  setIsAmbiguous(false);
+                  fetchQuestions();
+                }}
+              >
+                Previous
+              </Button>
+            )}
+          </div>
+          <div className="lowerContainerLeftDown">
+            <Button
+              variant="contained"
+              sx={{
+                bgcolor: "#F9D68E",
+                color: "black",
+                fontFamily: "Open Sans",
+                fontWeight: 600,
+                fontSize: "0.8rem",
+              }}
+              disabled={buttonDisabled}
+              onClick={buttonAction}
+            >
+              {buttonLabel}
+            </Button>
+          </div>
+        </div>
       </div>
     </div>
   );
