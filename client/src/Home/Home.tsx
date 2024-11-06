@@ -65,14 +65,14 @@ const Home: React.FC = () => {
       .then((response) => response.json())
       .then((data: AmbData) => {
         setLoading(false);
+        setLabelsParts(data.parts_labels);
+        setLabelsObjects(data.objects_labels);
         if (data.selected_questions.length > 0 && !isAmbiguous) {
           setQAHasUpdate(true); // Mark as updated
           setSelectedObjectsPolygons(data.selected_objects_polygons);
           setSelectedPartsPolygons(data.selected_parts_polygons);
           setSelectedQuestions(data.selected_questions);
           setQuestions(data.questions);
-          setLabelsParts(data.parts_labels);
-          setLabelsObjects(data.objects_labels);
         } else if (data.selected_questions.length > 0 && isAmbiguous) {
           setQAHasUpdate(true);
           setSelectedObjectsPolygonsAmbigous(data.selected_objects_polygons);
@@ -284,7 +284,16 @@ const Home: React.FC = () => {
   return (
     <div className="container">
       <div className="lowerContainer lowerContainer2">
-        <h1>IMG ID: ivc-{String(dataId).padStart(3, "0")}</h1>
+        <div className="leftUpItem">
+          <p>IMG ID: ivc-{String(dataId).padStart(3, "0")}</p>
+        </div>
+        <div className="leftUpItem">
+          <p>Selected Objects: {selectedObjectsPolygons.length}</p>{" "}
+          <p>&nbsp;</p> {/* Adds a small space */}
+          <p>&nbsp;</p> {/* Adds a small space */}
+          <p>Selected Parts: {selectedPartsPolygons.length}</p>{" "}
+          {/* Adds a small space */}
+        </div>
       </div>
       <div className="upperContainer">
         <InteractiveSVG

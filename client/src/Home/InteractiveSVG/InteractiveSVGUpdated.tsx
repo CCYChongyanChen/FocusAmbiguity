@@ -94,6 +94,16 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
     "#91A8D0",
   ];
 
+  const calculatePolygonArea = (points: number[][]) => {
+    let area = 0;
+    for (let i = 0; i < points.length; i++) {
+      const [x1, y1] = points[i];
+      const [x2, y2] = points[(i + 1) % points.length];
+      area += x1 * y2 - x2 * y1;
+    }
+    return Math.abs(area / 2);
+  };
+
   const fetchQuestions = (id: number) => {
     const getDataURL = `${API_BASE_URL}/api/users/${id}?ambiguous=${isAmbiguous}`;
     fetch(getDataURL) // Fetching the JSON file from the ablic directory
@@ -221,9 +231,28 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         .attr("x", 0)
         .attr("y", 0);
 
-      objectsPolygon.forEach((objects, groupIndex) => {
+      const sortedObjects: {
+        parts: number[][];
+        groupIndex: number;
+        avgArea: number;
+      }[] = objectsPolygon
+        .map((parts, groupIndex) => {
+          const areas = parts.map((segmentations) => {
+            const points: [number, number][] = [];
+            for (let i = 0; i < segmentations.length; i += 2) {
+              points.push([segmentations[i], segmentations[i + 1]]);
+            }
+            return calculatePolygonArea(points); // Calculate area for each polygon
+          });
+          const avgArea =
+            areas.reduce((sum, area) => sum + area, 0) / areas.length; // Calculate average area
+          return { parts, groupIndex, avgArea }; // Store original groupIndex with parts
+        })
+        .sort((a, b) => b.avgArea - a.avgArea); // Sort by average area descending
+
+      sortedObjects.forEach((objects, groupIndex) => {
         // parts is now an array of multiple segmentations (2D array)
-        const polygons = objects.map((segmentations, partIndex) => {
+        const polygons = objects.parts.map((segmentations, partIndex) => {
           const points = [];
           for (let i = 0; i < segmentations.length; i += 2) {
             points.push([segmentations[i], segmentations[i + 1]]);
@@ -244,7 +273,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
 
         // // construct points array of [number, number] from segmentations array
         const points: [number, number][] = [];
-        const segmentations = objects[0];
+        const segmentations = objects.parts[0];
         for (let i = 0; i < segmentations.length; i += 2) {
           points.push([segmentations[i], segmentations[i + 1]]);
         }
@@ -256,7 +285,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
             .append("text")
             .attr("x", cx)
             .attr("y", cy)
-            .text(objectsClass[groupIndex])
+            .text(objectsClass[objects.groupIndex])
             .attr("text-anchor", "middle")
             .attr("font-size", "14px")
             .attr("fill", "white")
@@ -264,14 +293,14 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         }
 
         // Check if the group is already selected
-        let isPrevSelected = selectedObjects.includes(groupIndex);
+        let isPrevSelected = selectedObjects.includes(objects.groupIndex);
         let isSelected = false;
 
         // Apply red fill for previously selected parts
         if (isPrevSelected) {
           polygons.forEach((polygon) => {
             polygon
-              .attr("fill", segmentationColors[groupIndex])
+              .attr("fill", segmentationColors[objects.groupIndex])
               .attr("opacity", 0.7)
               .attr("stroke", "black")
               .attr("stroke-dasharray", "10,5"); // Add dashed stroke (10px dash, 5px gap)
@@ -284,13 +313,13 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               // If the group was previously selected but not currently selected, select all
               polygons.forEach((poly) => {
                 poly
-                  .attr("fill", segmentationColors[groupIndex])
+                  .attr("fill", segmentationColors[objects.groupIndex])
                   .attr("opacity", 0.7)
                   .attr("stroke", "black")
                   .attr("stroke-dasharray", "10,5"); // Add dashed stroke (10px dash, 5px gap)
               });
               // setSelectedObjectPolygon(polygons);
-              setSelectedObjectPolygonIndex(groupIndex);
+              setSelectedObjectPolygonIndex(objects.groupIndex);
               // setSelectedPolygon([]);
               setSelectedPolygonIndex(-1);
               isSelected = true;
@@ -306,13 +335,13 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               // If the group was not previously selected, select all
               polygons.forEach((poly) => {
                 poly
-                  .attr("fill", segmentationColors[groupIndex])
+                  .attr("fill", segmentationColors[objects.groupIndex])
                   .attr("opacity", 0.7)
                   .attr("stroke", "black")
                   .attr("stroke-dasharray", "5,5"); // Add dashed stroke (5px dash, 5px gap)
               });
               // setSelectedObjectPolygon(polygons);
-              setSelectedObjectPolygonIndex(groupIndex);
+              setSelectedObjectPolygonIndex(objects.groupIndex);
               // setSelectedPolygon([]);
               setSelectedPolygonIndex(-1);
               isSelected = true;
@@ -331,16 +360,6 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
           });
         });
       });
-
-      const calculatePolygonArea = (points: number[][]) => {
-        let area = 0;
-        for (let i = 0; i < points.length; i++) {
-          const [x1, y1] = points[i];
-          const [x2, y2] = points[(i + 1) % points.length];
-          area += x1 * y2 - x2 * y1;
-        }
-        return Math.abs(area / 2);
-      };
 
       const sortedParts: {
         parts: number[][];
@@ -379,7 +398,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
             return svgParts
               .append("polygon")
               .attr("points", pointsString)
-              .attr("fill", segmentationColors[groupIndex])
+              .attr("fill", segmentationColors[parts.groupIndex])
               .attr("stroke", "black")
               .attr("opacity", 0.4)
               .attr("stroke-dasharray", "30,5"); // Add dashed stroke (5px dash, 5px gap)
@@ -415,7 +434,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         if (isPrevSelected) {
           polygons.forEach((polygon) => {
             polygon
-              .attr("fill", segmentationColors[groupIndex])
+              .attr("fill", segmentationColors[parts.groupIndex])
               .attr("stroke", "white")
               .attr("stroke-dasharray", "10,5")
               .attr("opacity", 0.8);
@@ -429,7 +448,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               // If the group was previously selected but not currently selected, select all
               polygons.forEach((poly) => {
                 polygon
-                  .attr("fill", segmentationColors[groupIndex])
+                  .attr("fill", segmentationColors[parts.groupIndex])
                   .attr("stroke", "white")
                   .attr("stroke-dasharray", "10,5")
                   .attr("opacity", 0.8); // Add dashed stroke (5px dash, 5px gap)
@@ -443,7 +462,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               // Deselect the group
               polygons.forEach((poly) => {
                 poly
-                  .attr("fill", segmentationColors[groupIndex])
+                  .attr("fill", segmentationColors[parts.groupIndex])
                   .attr("stroke", "black")
                   .attr("opacity", 0.4)
                   .attr("stroke-dasharray", "30,5"); // Add dashed stroke (5px dash, 5px gap)
@@ -455,7 +474,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               // If the group was not previously selected, select all
               polygons.forEach((poly) => {
                 poly
-                  .attr("fill", segmentationColors[groupIndex])
+                  .attr("fill", segmentationColors[parts.groupIndex])
                   .attr("stroke", "white")
                   .attr("stroke-dasharray", "10,5")
                   .attr("opacity", 0.8); // Add dashed stroke (5px dash, 5px gap)
@@ -469,7 +488,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
               // Deselect all polygons in the group
               polygons.forEach((poly) => {
                 poly
-                  .attr("fill", segmentationColors[groupIndex])
+                  .attr("fill", segmentationColors[parts.groupIndex])
                   .attr("stroke", "black")
                   .attr("opacity", 0.4)
                   .attr("stroke-dasharray", "30,5"); // Add dashed stroke (5px dash, 5px gap)
