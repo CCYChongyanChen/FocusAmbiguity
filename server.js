@@ -6,6 +6,7 @@ const cors = require("cors");
 const url = require("url");
 const https = require("https");
 
+
 const app = express();
 const PORT = process.env.PORT || 4000;
 
@@ -14,6 +15,7 @@ app.use(cors()); // Enable CORS for the frontend
 app.use(bodyParser.json()); // Parse JSON bodies
 app.use(express.static(path.join(__dirname, "build"))); // Serve static files
 app.use("/images", express.static(path.join(__dirname, "public/images")));
+app.use(cors({ origin: "*" }));
 
 // Helper function to read the JSON file
 const readData = (ambiguous, index) => {
