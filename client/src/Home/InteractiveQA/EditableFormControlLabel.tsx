@@ -62,7 +62,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
             control={
               <Radio
                 checked={true}
-                sx={{ fontSize: "clamp(4px, 2vh, 18px)" }}
+                sx={{ fontSize: "clamp(4px, 1vh, 16px)" }}
               />
             }
             label={labelValue}
@@ -70,7 +70,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
             onChange={(e) => formHandler(e, index)}
             sx={{
               "& .MuiFormControlLabel-label": {
-                fontSize: "clamp(10px, 1.8vh, 20px)", // Responsive font size for FormControlLabel
+                fontSize: "clamp(4px, 1.5vh, 16px)", // Responsive font size for FormControlLabel
                 color: labelColor,
               },
               "&.Mui-disabled .MuiFormControlLabel-label": {
@@ -91,7 +91,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
             onChange={(e) => formHandler(e, index)}
             sx={{
               "& .MuiFormControlLabel-label": {
-                fontSize: "clamp(10px, 1.8vh, 20px)", // Responsive font size for FormControlLabel
+                fontSize: "clamp(4px, 1.5vh, 16px)", // Responsive font size for FormControlLabel
               },
             }}
           />

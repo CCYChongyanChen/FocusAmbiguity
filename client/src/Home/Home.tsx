@@ -5,7 +5,6 @@ import InteractiveQA from "./InteractiveQA/InteractiveQA";
 import { useSearchParams } from "react-router-dom";
 import { Button } from "@mui/material";
 import { AmbData } from "../types";
-import { timeout } from "d3";
 
 const Home: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -296,7 +295,7 @@ const Home: React.FC = () => {
   return (
     <div className="container">
       <div className="lowerContainer lowerContainer2">
-        <div className="leftUpItem">
+        <div className="leftUpItem leftUpItem3">
           <p>IMG ID: ivc-{String(dataId).padStart(3, "0")}</p>
         </div>
         <div className="leftUpItem">
@@ -391,6 +390,8 @@ const Home: React.FC = () => {
                 fontFamily: "Open Sans",
                 fontWeight: 600,
                 fontSize: "0.8rem",
+                width: "100%",
+                height: "100%",
               }}
               disabled={buttonDisabled}
               onClick={buttonAction}

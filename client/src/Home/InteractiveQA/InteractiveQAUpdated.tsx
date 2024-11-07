@@ -47,14 +47,12 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
   const text = isAmbiguous ? (
     <p>
       Step 1: Please select, edit, or create a focus{" "}
-      <span className="question-red">ambiguous</span> question. There should be
-      an ambiguity regarding what visual contents the question asks about.
+      <span className="question-red">ambiguous</span> question.
     </p>
   ) : (
     <p>
       Step 1: Please select, edit, or create a focus{" "}
-      <span className="question-blue">unambiguous</span> question. There should
-      be no ambiguity regarding what visual contents the question asks about.
+      <span className="question-blue">unambiguous</span> question.
     </p>
   );
 

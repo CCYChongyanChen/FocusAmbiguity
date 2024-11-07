@@ -34,12 +34,16 @@
 .leftUpItem{
   display: flex;
   justify-content: flex-start;
-  margin-top: 3vh;
   height: 2vh;
   width: 60vw;
 }
+
 .leftUpItem2{
   margin-top: -2vh;
+}
+
+.leftUpItem3{
+  justify-content: center;
 }
 .lowerContainerRight {
   display: flex;
@@ -68,13 +72,12 @@
 .lowerContainerLeftDown {
   display: flex;
   height: 4vh;
-  width: 60vw;
   margin-right: 10%;
 }
 .lowerContainer2 {
   flex-direction: column;
-  align-items: flex-start;
   justify-content: space-around;
+  align-self: start;
   width: 95vw;
   height: 10vh;
   font-size: clamp(5px, 2vh, 15px);
@@ -101,7 +104,7 @@ body {
   display: flex;
   flex-direction: column;
   border: 2px solid black;
-  width: 33vw;
+  width: 53vw;
   justify-content: space-evenly;
   align-items: center;
 }
@@ -110,7 +113,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  width: 62vw;
+  width: 40vw;
 }
 
 .submitButtonContainer {

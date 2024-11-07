@@ -210,7 +210,8 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
           "viewBox",
           `0 0 ${imageDimensions.width} ${imageDimensions.height}`,
         )
-        .attr("width", "90%"); // Make it responsive
+        .attr("width", "95%")
+        .attr("height", "100%");
 
       svgObject
         .append("image")
@@ -222,8 +223,8 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         .attr(
           "viewBox",
           `0 0 ${imageDimensions.width} ${imageDimensions.height}`,
-        )
-        .attr("width", "90%"); // Make it responsive
+        ).attr("width", "95%")
+        .attr("height", "100%");
 
       svgParts
         .append("image")
