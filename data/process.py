@@ -15,6 +15,8 @@ for data_file_path in data_file_paths:
         if "questions" in entry and "original_questions" not in entry:
             entry["original_questions"] = entry["questions"][:]
 
+        entry["selected_questions"] = []
+
         # Check if 'imageURL' exists and starts with 'http'
         if "imageURL" in entry and entry["imageURL"].startswith("http://"):
             entry["imageURL"] = entry["imageURL"].replace("http://", "https://", 1)
