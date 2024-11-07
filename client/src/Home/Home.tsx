@@ -124,7 +124,12 @@ const Home: React.FC = () => {
   const AmTurkForm = () => {
     return (
       <form action={AMTURK_URL} method="post" id="mturk_form">
-        <input type="hidden" ref={assignmentIdRef} name="assignmentId" />
+        <input
+          type="hidden"
+          ref={assignmentIdRef}
+          id="inputAssignmentId"
+          name="assignmentId"
+        />
         <input type="hidden" ref={workerIdRef} name="workerId" />
         <input type="hidden" ref={hitIdRef} name="hitId" />
         <input type="hidden" name="turkSubmitTo" value={AMTURK_SUBMIT} />
@@ -260,7 +265,7 @@ const Home: React.FC = () => {
     // Set ref values for URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     if (assignmentIdRef.current) {
-      // console.log(urlParams.get("assignmentId"));
+      console.log(urlParams.get("assignmentId"));
       assignmentIdRef.current.value =
         urlParams.get("assignmentId") || "ASSIGNMENT_ID_NOT_AVAILABLE";
     }
@@ -273,17 +278,39 @@ const Home: React.FC = () => {
       // console.log(urlParams.get("hitId"));
       hitIdRef.current.value = urlParams.get("hitId") || "HIT_ID_NOT_AVAILABLE";
     }
-    // console.log("Submitting form...");
-    // console.log("Total time spent:", totalTimeSpent);
-    // console.log("Data ID:", dataId);
-    // console.log("Selected Questions:", selectedQuestions);
-    // console.log("Selected Objects:", selectedObjectsPolygons);
-    // console.log("Selected Parts:", selectedPartsPolygons);
-    // console.log("Selected Questions Ambiguous:", selectedQuestionsAmbigous);
-    // console.log("Selected Objects Ambiguous:", selectedObjectsPolygonsAmbigous);
-    // console.log("Selected Parts Ambiguous:", selectedPartsPolygonsAmbigous);
 
-    (document.getElementById("mturk_form") as HTMLFormElement).submit();
+    // print the form data
+    console.log("Assignment ID:", assignmentIdRef.current!.value);
+    console.log("Worker ID:", workerIdRef.current!.value);
+    console.log("HIT ID:", hitIdRef.current!.value);
+    console.log("Data ID:", dataIdRef.current!.value);
+    console.log("Selected Questions:", selectedQuestionsRef.current!.value);
+    console.log(
+      "Selected Objects Polygons:",
+      selectedObjectsPolygonsRef.current!.value,
+    );
+    console.log(
+      "Selected Parts Polygons:",
+      selectedPartsPolygonsRef.current!.value,
+    );
+    console.log(
+      "Selected Questions Ambiguous:",
+      selectedQuestionsAmbigousRef.current!.value,
+    );
+    console.log(
+      "Selected Objects Polygons Ambiguous:",
+      selectedObjectsPolygonsAmbigousRef.current!.value,
+    );
+    console.log(
+      "Selected Parts Polygons Ambiguous:",
+      selectedPartsPolygonsAmbigousRef.current!.value,
+    );
+    console.log("User Time:", userTimeRef.current!.value);
+
+    setTimeout(() => {
+       (document.getElementById("mturk_form") as HTMLFormElement).submit();
+    }, 1500);
+   
   };
 
   return (
