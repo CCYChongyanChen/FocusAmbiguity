@@ -44,7 +44,6 @@ const Home: React.FC = () => {
 
   // Define refs for each hidden input
   const dataIdRef = useRef<HTMLInputElement>(null);
-  const isAmbiguousRef = useRef<HTMLInputElement>(null);
   const selectedQuestionsRef = useRef<HTMLInputElement>(null);
   const selectedObjectsPolygonsRef = useRef<HTMLInputElement>(null);
   const selectedPartsPolygonsRef = useRef<HTMLInputElement>(null);
@@ -64,9 +63,14 @@ const Home: React.FC = () => {
     fetch(`${API_BASE_URL}/api/users/${dataId}?ambiguous=${isAmbiguous}`)
       .then((response) => response.json())
       .then((data: AmbData) => {
+        while (data === undefined) {
+          console.log("Data is undefined");
+          setLoading(true);
+        }
         setLoading(false);
-        setLabelsParts(data.parts_labels);
         setLabelsObjects(data.objects_labels);
+        setLabelsParts(data.parts_labels);
+        console.log(data.imageURL);
         if (data.selected_questions.length > 0 && !isAmbiguous) {
           setQAHasUpdate(true); // Mark as updated
           setSelectedObjectsPolygons(data.selected_objects_polygons);
@@ -107,7 +111,9 @@ const Home: React.FC = () => {
     fetch(`${API_BASE_URL}/api/users/?ambiguous=${isAmbiguous}`)
       .then((response) => response.json())
       .then((data: AmbData[]) => {
+        console.log(data);
         setMaximumLength(data.length);
+        console.log("Maximum length:", maximumLength);
       })
       .catch((error) => {
         console.error("Error fetching questions:", error);
@@ -261,24 +267,30 @@ const Home: React.FC = () => {
     // Set ref values for URL parameters
     const urlParams = new URLSearchParams(window.location.search);
     if (assignmentIdRef.current) {
-      console.log(urlParams.get("assignmentId"));
+      // console.log(urlParams.get("assignmentId"));
       assignmentIdRef.current.value =
         urlParams.get("assignmentId") || "ASSIGNMENT_ID_NOT_AVAILABLE";
     }
     if (workerIdRef.current) {
-      console.log(urlParams.get("workerId"));
+      // console.log(urlParams.get("workerId"));
       workerIdRef.current.value =
         urlParams.get("workerId") || "WORKER_ID_NOT_AVAILABLE";
     }
     if (hitIdRef.current) {
-      console.log(urlParams.get("hitId"));
+      // console.log(urlParams.get("hitId"));
       hitIdRef.current.value = urlParams.get("hitId") || "HIT_ID_NOT_AVAILABLE";
     }
-    timeout(() => {
-      console.log("Submitting form...");
-      (document.getElementById("mturk_form") as HTMLFormElement).submit();
-    }, 1000);
-    // (document.getElementById("mturk_form") as HTMLFormElement).submit();
+    // console.log("Submitting form...");
+    // console.log("Total time spent:", totalTimeSpent);
+    // console.log("Data ID:", dataId);
+    // console.log("Selected Questions:", selectedQuestions);
+    // console.log("Selected Objects:", selectedObjectsPolygons);
+    // console.log("Selected Parts:", selectedPartsPolygons);
+    // console.log("Selected Questions Ambiguous:", selectedQuestionsAmbigous);
+    // console.log("Selected Objects Ambiguous:", selectedObjectsPolygonsAmbigous);
+    // console.log("Selected Parts Ambiguous:", selectedPartsPolygonsAmbigous);
+
+    (document.getElementById("mturk_form") as HTMLFormElement).submit();
   };
 
   return (

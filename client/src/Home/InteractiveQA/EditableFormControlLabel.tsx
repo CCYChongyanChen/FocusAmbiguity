@@ -20,6 +20,15 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
   const [isEditing, setIsEditing] = useState(editing);
   const [labelValue, setLabelValue] = useState(selectedQuestion);
   const [inputValue, setInputValue] = useState(labelValue);
+  const [labelColor, setLabelColor] = useState("black");
+
+  useEffect(() => {
+    if (isAmbiguous) {
+      setLabelColor("#F08080");
+    } else {
+      setLabelColor("#228B22");
+    }
+  }, [isAmbiguous]);
 
   const handleEditClick = () => {
     if (isEditing) {
@@ -62,6 +71,10 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
             sx={{
               "& .MuiFormControlLabel-label": {
                 fontSize: "clamp(10px, 1.8vh, 20px)", // Responsive font size for FormControlLabel
+                color: labelColor,
+              },
+              "&.Mui-disabled .MuiFormControlLabel-label": {
+                color: labelColor, // Change this to the color you want when disabled
               },
             }}
             disabled
