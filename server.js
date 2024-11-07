@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 4000;
 // Middleware
 app.use(cors()); // Enable CORS for the frontend
 app.use(bodyParser.json()); // Parse JSON bodies
+app.use(express.static(path.join(__dirname, "build"))); // Serve static files
 app.use("/images", express.static(path.join(__dirname, "public/images")));
 
 // Load data once at startup
@@ -223,7 +224,7 @@ app.put("/api/users/:id/unSelectAll", (req, res) => {
 
 // Catch-all route to serve the React app's index.html (for React Router)
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
+  res.sendFile(path.join(__dirname, "./build", "index.html"));
 });
 
 // Start the server
