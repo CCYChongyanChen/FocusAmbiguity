@@ -40,6 +40,8 @@ const Home: React.FC = () => {
   const [buttonAction, setButtonAction] = useState<() => void>(() => () => {});
   // Base URL from environment variable
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const AMTURK_URL = process.env.REACT_APP_AMTURK_URL;
+  const AMTURK_SUBMIT = process.env.REACT_APP_SUBMIT_URL;
 
   // Define refs for each hidden input
   const dataIdRef = useRef<HTMLInputElement>(null);
@@ -121,19 +123,11 @@ const Home: React.FC = () => {
   };
   const AmTurkForm = () => {
     return (
-      <form
-        action="https://workersandbox.mturk.com/mturk/externalSubmit"
-        method="post"
-        id="mturk_form"
-      >
+      <form action={AMTURK_URL} method="post" id="mturk_form">
         <input type="hidden" ref={assignmentIdRef} name="assignmentId" />
         <input type="hidden" ref={workerIdRef} name="workerId" />
         <input type="hidden" ref={hitIdRef} name="hitId" />
-        <input
-          type="hidden"
-          name="turkSubmitTo"
-          value="https://workersandbox.mturk.com"
-        />
+        <input type="hidden" name="turkSubmitTo" value={AMTURK_SUBMIT} />
         <input type="hidden" ref={dataIdRef} name="dataId" value={dataId} />
         <input
           type="hidden"
