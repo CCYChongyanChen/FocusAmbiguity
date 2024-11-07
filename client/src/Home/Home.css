@@ -34,8 +34,12 @@
 .leftUpItem{
   display: flex;
   justify-content: flex-start;
+  margin-top: 3vh;
   height: 2vh;
   width: 60vw;
+}
+.leftUpItem2{
+  margin-top: -2vh;
 }
 .lowerContainerRight {
   display: flex;

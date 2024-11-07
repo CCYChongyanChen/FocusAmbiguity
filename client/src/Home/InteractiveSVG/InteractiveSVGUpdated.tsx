@@ -287,7 +287,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
             .attr("y", cy)
             .text(objectsClass[objects.groupIndex])
             .attr("text-anchor", "middle")
-            .attr("font-size", "14px")
+            .attr("font-size", "1.5vh")
             .attr("fill", "white")
             .attr("font-weight", "bold");
         }
@@ -421,7 +421,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
             .attr("y", cy)
             .text(partsClass[parts.groupIndex])
             .attr("text-anchor", "middle")
-            .attr("font-size", "14px")
+            .attr("font-size", "1.5vh")
             .attr("fill", "white")
             .attr("font-weight", "medium");
         }

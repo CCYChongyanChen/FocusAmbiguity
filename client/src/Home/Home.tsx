@@ -288,10 +288,27 @@ const Home: React.FC = () => {
           <p>IMG ID: ivc-{String(dataId).padStart(3, "0")}</p>
         </div>
         <div className="leftUpItem">
-          <p>Selected Objects: {selectedObjectsPolygons.length}</p>{" "}
+          <p>
+            Selected Objects:{" "}
+            {isAmbiguous
+              ? selectedObjectsPolygonsAmbigous.length
+              : selectedObjectsPolygons.length}
+          </p>{" "}
           <p>&nbsp;</p> {/* Adds a small space */}
           <p>&nbsp;</p> {/* Adds a small space */}
-          <p>Selected Parts: {selectedPartsPolygons.length}</p>{" "}
+          <p>&nbsp;</p> {/* Adds a small space */}
+          <p>&nbsp;</p> {/* Adds a small space */}
+          <p>&nbsp;</p> {/* Adds a small space */}
+          <p>&nbsp;</p> {/* Adds a small space */}
+          <p>&nbsp;</p> {/* Adds a small space */}
+          <p>&nbsp;</p> {/* Adds a small space */}
+          <p>&nbsp;</p> {/* Adds a small space */}
+          <p>
+            Selected Parts:{" "}
+            {isAmbiguous
+              ? selectedPartsPolygonsAmbigous.length
+              : selectedPartsPolygons.length}
+          </p>{" "}
           {/* Adds a small space */}
         </div>
       </div>
@@ -314,10 +331,19 @@ const Home: React.FC = () => {
       <div className="lowerContainer">
         <div className="lowerContainerLeft">
           <div className="lowerContainerLeftUp">
-            <div className="leftUpItem">
+            <div className="leftUpItem leftUpItem2">
               <p>Objects: {labelsObjects.join(", ")}</p>
             </div>
-            <div className="leftUpItem">
+            <div className="leftUpItem leftUpItem2">
+              <p>&nbsp;</p> {/* Adds a small space */}
+              <p>&nbsp;</p> {/* Adds a small space */}
+              <p>&nbsp;</p> {/* Adds a small space */}
+              <p>&nbsp;</p> {/* Adds a small space */}
+              <p>&nbsp;</p> {/* Adds a small space */}
+              <p>&nbsp;</p> {/* Adds a small space */}
+              <p>&nbsp;</p> {/* Adds a small space */}
+              <p>&nbsp;</p> {/* Adds a small space */}
+              <p>&nbsp;</p> {/* Adds a small space */}
               <p>Parts: {labelsParts.join(", ")}</p>
             </div>
           </div>{" "}
