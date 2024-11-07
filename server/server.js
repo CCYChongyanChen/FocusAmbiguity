@@ -15,30 +15,20 @@ app.use(bodyParser.json()); // Parse JSON bodies
 app.use(express.static(path.join(__dirname, "build"))); // Serve static files
 app.use("/images", express.static(path.join(__dirname, "public/images")));
 
-// Load data once at startup
-const loadData = (filePath) => {
-  try {
-    const data = fs.readFileSync(filePath);
-    return JSON.parse(data);
-  } catch (error) {
-    console.error(`Error loading data from ${filePath}:`, error);
-    return null;
+// Helper function to read the JSON file
+const readData = (ambiguous, index) => {
+  // each json file contains 50 items, find the correct file to read
+  let hash = Math.floor(index / 50);
+  let dataFilePath = "";
+  ambiguous = ambiguous === "true";
+  if (ambiguous) {
+    dataFilePath = path.join(__dirname, `data/ivc-ambigous-${hash}.json`);
+  } else {
+    dataFilePath = path.join(__dirname, `data/ivc-unambigous-${hash}.json`);
   }
+  const data = fs.readFileSync(dataFilePath);
+  return JSON.parse(data);
 };
-
-const ambigousDataFilePath = path.join(__dirname, "data/ivc-ambigous.json");
-const unambigousDataFilePath = path.join(__dirname, "data/ivc-unambigous.json");
-
-// Store the loaded data in memory
-const ambigousData = loadData(ambigousDataFilePath);
-const unambigousData = loadData(unambigousDataFilePath);
-
-// In-memory buffers to store changes
-let ambigousDataBuffer = {};
-let unambigousDataBuffer = {};
-
-// Interval (in milliseconds) for flushing the buffers to disk
-const FLUSH_INTERVAL = 60000; // 60 seconds
 
 app.get("/fetch-image", (req, res) => {
   let imageUrl = req.query.url; // Get the image URL from the query parameter
@@ -83,39 +73,22 @@ app.get("/fetch-image", (req, res) => {
     });
 });
 
-// Helper function to update the buffer
-const bufferUpdate = (data, ambiguous, index) => {
-  const buffer =
-    ambiguous === "true" ? ambigousDataBuffer : unambigousDataBuffer;
-  buffer[index] = data; // Store or overwrite the entry by index
+// Helper function to write to the JSON file
+const writeData = (data, ambiguous, index) => {
+  // each json file contains 50 items, find the correct file to read
+  let hash = Math.floor(index / 50);
+  let dataFilePath = "";
+  ambiguous = ambiguous === "true";
+  if (ambiguous) {
+    dataFilePath = path.join(__dirname, `data/ivc-ambigous-${hash}.json`);
+  } else {
+    dataFilePath = path.join(__dirname, `data/ivc-unambigous-${hash}.json`);
+  }
+  fs.writeFileSync(dataFilePath, JSON.stringify(data, null, 2));
 };
 
-// Periodic flush function to write buffered changes to the file
-const flushBuffers = () => {
-  if (Object.keys(ambigousDataBuffer).length > 0) {
-    flushData(ambigousData, ambigousDataFilePath);
-  }
-
-  if (Object.keys(unambigousDataBuffer).length > 0) {
-    flushData(unambigousData, unambigousDataFilePath);
-  }
-};
-
-// Function to write the buffered data to the file
-const flushData = (buffer, filePath) => {
-  try {
-    fs.writeFileSync(filePath, JSON.stringify(buffer, null, 2));
-  } catch (error) {
-    console.error(`Error writing data to ${filePath}:`, error);
-  }
-};
-
-// // Load data once at startup
-// const ambigousData = loadDataFromLog(ambigousDataFilePath);
-// const unambigousData = loadDataFromLog(unambigousDataFilePath);
-
-// Set interval to periodically flush buffers
-setInterval(flushBuffers, FLUSH_INTERVAL);
+// Serve the static files from the React app
+app.use(express.static(path.join(__dirname, "build")));
 
 // API Routes
 app.get("/api", (req, res) => {
@@ -123,16 +96,31 @@ app.get("/api", (req, res) => {
 });
 
 app.get("/api/users", (req, res) => {
-  const data = req.query.ambiguous === "true" ? ambigousData : unambigousData;
+  // this is a dirty number, but it is the only way to get the length of the data
   res.json({
-    length: data.length,
+    length: 2549,
   });
 });
 
+app.put("/api/users/:id/selectedQuestions", (req, res) => {
+   const data = readData(req.query.ambiguous, parseInt(req.params.id));
+   const userIndex = parseInt(req.params.id) % 50;
+  console.log("userIndex", userIndex);
+  if (userIndex !== -1) {
+    data[userIndex].selected_questions = req.body.selected_questions;
+    writeData(data, req.query.ambiguous, parseInt(req.params.id));
+    res.json(data[userIndex]);
+  } else {
+    res.status(404).json({ message: "User not found" });
+  }
+});
+
 app.get("/api/users/:id", (req, res) => {
-  const data = req.query.ambiguous === "true" ? ambigousData : unambigousData;
-  const userIndex = parseInt(req.params.id);
+  const data = readData(req.query.ambiguous, parseInt(req.params.id));
+  const userIndex = parseInt(req.params.id) % 50;
   const user = data[userIndex];
+  // const user = data[parseInt(req.params.id)];
+  // const ambiguous = data[req.params.isambiguous];
   if (user) {
     res.json(user);
   } else {
@@ -140,43 +128,36 @@ app.get("/api/users/:id", (req, res) => {
   }
 });
 
-app.put("/api/users/:id/selectedQuestions", (req, res) => {
-  const data = req.query.ambiguous === "true" ? ambigousData : unambigousData;
-  const userIndex = parseInt(req.params.id);
-  if (userIndex !== -1) {
-    data[userIndex].selected_questions = req.body.selected_questions;
-    bufferUpdate(data[userIndex], req.query.ambiguous, userIndex);
-    res.json(data[userIndex]);
-  } else {
-    res.status(404).json({ message: "User not found" });
-  }
-});
-
 app.put("/api/users/:id/modifyQuestion", (req, res) => {
-  const data = req.query.ambiguous === "true" ? ambigousData : unambigousData;
-  const userIndex = parseInt(req.params.id);
+  console.log("Request received on /api/users/:id/modifyQuestion");
+  const data = readData(req.query.ambiguous, parseInt(req.params.id));
+  const userIndex = parseInt(req.params.id) % 50;
   if (userIndex !== -1) {
-    const questionIndex = req.body.index;
-    if (questionIndex < data[userIndex].questions.length) {
-      data[userIndex].questions[questionIndex] = req.body.question;
+    let length = data[userIndex].questions.length;
+    if (req.body.index < length) {
+      data[userIndex].questions[req.body.index] = req.body.question;
+      writeData(data, req.query.ambiguous, parseInt(req.params.id));
+      res.json(data[userIndex]);
     } else {
       data[userIndex].questions.push(req.body.question);
+      writeData(data, req.query.ambiguous, parseInt(req.params.id));
+      res.json(data[userIndex]);
     }
-    bufferUpdate(data[userIndex], req.query.ambiguous, userIndex);
-    res.json(data[userIndex]);
   } else {
     res.status(404).json({ message: "User not found" });
   }
 });
 
 app.put("/api/users/:id/discardQuestions", (req, res) => {
-  const data = req.query.ambiguous === "true" ? ambigousData : unambigousData;
-  const userIndex = parseInt(req.params.id);
+  console.log("Request received on /api/users/:id/discardQuestions");
+  const data = readData(req.query.ambiguous, parseInt(req.params.id));
+  const userIndex = parseInt(req.params.id) % 50;
   if (userIndex !== -1) {
     const questionIndex = req.body.index;
+    console.log("questionIndex", questionIndex);
     data[userIndex].questions[questionIndex] =
       data[userIndex].original_questions[questionIndex];
-    bufferUpdate(data[userIndex], req.query.ambiguous, userIndex);
+    writeData(data, req.query.ambiguous, parseInt(req.params.id));
     res.json(data[userIndex]);
   } else {
     res.status(404).json({ message: "User not found" });
@@ -184,12 +165,11 @@ app.put("/api/users/:id/discardQuestions", (req, res) => {
 });
 
 app.put("/api/users/:id/selectedParts", (req, res) => {
-  console.log("recieved");
-  const data = req.query.ambiguous === "true" ? ambigousData : unambigousData;
-  const userIndex = parseInt(req.params.id);
+  const data = readData(req.query.ambiguous, parseInt(req.params.id));
+  const userIndex = parseInt(req.params.id) % 50;
   if (userIndex !== -1) {
     data[userIndex].selected_parts_polygons = req.body.selected_parts_polygons;
-    bufferUpdate(data[userIndex], req.query.ambiguous, userIndex);
+    writeData(data, req.query.ambiguous, parseInt(req.params.id));
     res.json(data[userIndex]);
   } else {
     res.status(404).json({ message: "User not found" });
@@ -197,12 +177,12 @@ app.put("/api/users/:id/selectedParts", (req, res) => {
 });
 
 app.put("/api/users/:id/selectedObjects", (req, res) => {
-  const data = req.query.ambiguous === "true" ? ambigousData : unambigousData;
-  const userIndex = parseInt(req.params.id);
+  const data = readData(req.query.ambiguous, parseInt(req.params.id));
+  const userIndex = parseInt(req.params.id) % 50;
   if (userIndex !== -1) {
     data[userIndex].selected_objects_polygons =
       req.body.selected_objects_polygons;
-    bufferUpdate(data[userIndex], req.query.ambiguous, userIndex);
+    writeData(data, req.query.ambiguous, parseInt(req.params.id));
     res.json(data[userIndex]);
   } else {
     res.status(404).json({ message: "User not found" });
@@ -210,12 +190,12 @@ app.put("/api/users/:id/selectedObjects", (req, res) => {
 });
 
 app.put("/api/users/:id/unSelectAll", (req, res) => {
-  const data = req.query.ambiguous === "true" ? ambigousData : unambigousData;
-  const userIndex = parseInt(req.params.id);
+  const data = readData(req.query.ambiguous, parseInt(req.params.id));
+  const userIndex = parseInt(req.params.id) % 50;
   if (userIndex !== -1) {
     data[userIndex].selected_parts_polygons = [];
     data[userIndex].selected_objects_polygons = [];
-    bufferUpdate(data[userIndex], req.query.ambiguous, userIndex);
+    writeData(data, req.query.ambiguous, parseInt(req.params.id));
     res.json(data[userIndex]);
   } else {
     res.status(404).json({ message: "User not found" });
@@ -224,7 +204,7 @@ app.put("/api/users/:id/unSelectAll", (req, res) => {
 
 // Catch-all route to serve the React app's index.html (for React Router)
 app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "./build", "index.html"));
+  res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
 // Start the server

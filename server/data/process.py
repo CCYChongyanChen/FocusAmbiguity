@@ -8,6 +8,7 @@ for data_file_path in data_file_paths:
     # Read the JSON data
     with open(data_file_path, "r", encoding="utf-8") as file:
         data = json.load(file)
+        print(len(data))
 
     # Iterate over each entry in the data
     for entry in data:
@@ -26,9 +27,13 @@ for data_file_path in data_file_paths:
             if key.startswith("selected_"):
                 entry[key] = []
 
-    # Write the updated data back to the JSON file
-    with open(data_file_path, "w", encoding="utf-8") as file:
-        json.dump(data, file, indent=2, ensure_ascii=False)
+    # split into files with 50 entries each
+    data_split = [data[i : i + 50] for i in range(0, len(data), 50)]
+    for i, data in enumerate(data_split):
+        with open(
+            f"{data_file_path.split('.')[0]}-{i}.json", "w", encoding="utf-8"
+        ) as file:
+            json.dump(data, file, indent=2, ensure_ascii=False)
 
     print(
         "Updated JSON file: added original_questions where missing and changed all imageURLs to start with https."
