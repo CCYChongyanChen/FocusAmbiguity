@@ -308,9 +308,8 @@ const Home: React.FC = () => {
     console.log("User Time:", userTimeRef.current!.value);
 
     setTimeout(() => {
-       (document.getElementById("mturk_form") as HTMLFormElement).submit();
+      (document.getElementById("mturk_form") as HTMLFormElement).submit();
     }, 1500);
-   
   };
 
   return (
@@ -362,7 +361,6 @@ const Home: React.FC = () => {
 
       <div className="lowerContainer">
         <div className="lowerContainerLeft">
-          <div className="lowerContainerLeftUp">
             <div className="leftUpItem leftUpItem2">
               <p>Objects: {labelsObjects.join(", ")}</p>
             </div>
@@ -378,7 +376,6 @@ const Home: React.FC = () => {
               <p>&nbsp;</p> {/* Adds a small space */}
               <p>Parts: {labelsParts.join(", ")}</p>
             </div>
-          </div>{" "}
         </div>
         <div className="lowerContainerRight">
           <div className="lowerContainerLeftDown">

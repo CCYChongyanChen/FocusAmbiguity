@@ -223,7 +223,8 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
         .attr(
           "viewBox",
           `0 0 ${imageDimensions.width} ${imageDimensions.height}`,
-        ).attr("width", "95%")
+        )
+        .attr("width", "95%")
         .attr("height", "100%");
 
       svgParts
@@ -633,7 +634,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
   // };
 
   return (
-    <div className="section section1">
+    <div className="interactiveSVG">
       <SelectTools
         hideAllLabel={hideAllLabel}
         setHideAllLabel={setHideAllLabel}
@@ -644,8 +645,14 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
           });
         }}
       />
-      <svg ref={svgRef}></svg>
-      <svg ref={svgRefParts}></svg>
+      <div className="section1">
+        <div className="section sectionsvg">
+          <svg ref={svgRef}></svg>
+        </div>
+        <div className="section sectionsvg">
+          <svg ref={svgRefParts}></svg>
+        </div>
+      </div>
     </div>
   );
 };

@@ -5,12 +5,12 @@
 }
 
 .subsection1 {
-  height: 35vh;
+  height: 49vh;
   width: 100%;
 }
 
 .subsection2 {
-  height: 29vh;
+  height: 15vh;
   width: 99%;
 }
 
@@ -27,7 +27,7 @@ p.bold {
 }
 
 .question {
-  font-size: clamp(8px, 2vh, 18px);
+  font-size: clamp(8px, 1.5vh, 14px);
   /* Minimum 16px, scales with viewport, max 24px */
   font-weight: 600;
   display: inline;
@@ -69,13 +69,13 @@ p.bold {
 
 .question-blue {
   color: #228B22;
-  font-size: clamp(15px, 2vh, 20px);
+  font-size: clamp(15px, 2vh, 16px);
   /* Responsive font size for blue question text */
 }
 
 .question-red {
   color: #F08080;
-  font-size: clamp(15px, 2vh, 20px);
+  font-size: clamp(15px, 2vh, 16px);
   /* Responsive font size for blue question text */
 }
 

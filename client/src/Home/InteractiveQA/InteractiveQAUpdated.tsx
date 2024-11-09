@@ -60,7 +60,7 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
     <div className="section section2">
       <div className="subsection subsection1">
         <div className="questionBox">
-          <p className="question">{text}</p>
+          <div className="question">{text}</div>
         </div>
 
         <div className="answerBox">
