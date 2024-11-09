@@ -349,6 +349,7 @@ const Home: React.FC = () => {
           parentFetch={fetchQuestions}
           updated={QAHasUpdate}
           isAmbiguous={isAmbiguous}
+          selectedQuestion={isAmbiguous ? selectedQuestionsAmbigous : selectedQuestions}
         />
         <InteractiveQA
           id={dataId}
@@ -361,21 +362,21 @@ const Home: React.FC = () => {
 
       <div className="lowerContainer">
         <div className="lowerContainerLeft">
-            <div className="leftUpItem leftUpItem2">
-              <p>Objects: {labelsObjects.join(", ")}</p>
-            </div>
-            <div className="leftUpItem leftUpItem2">
-              <p>&nbsp;</p> {/* Adds a small space */}
-              <p>&nbsp;</p> {/* Adds a small space */}
-              <p>&nbsp;</p> {/* Adds a small space */}
-              <p>&nbsp;</p> {/* Adds a small space */}
-              <p>&nbsp;</p> {/* Adds a small space */}
-              <p>&nbsp;</p> {/* Adds a small space */}
-              <p>&nbsp;</p> {/* Adds a small space */}
-              <p>&nbsp;</p> {/* Adds a small space */}
-              <p>&nbsp;</p> {/* Adds a small space */}
-              <p>Parts: {labelsParts.join(", ")}</p>
-            </div>
+          <div className="leftUpItem leftUpItem2">
+            <p>Objects: {labelsObjects.join(", ")}</p>
+          </div>
+          <div className="leftUpItem leftUpItem2">
+            <p>&nbsp;</p> {/* Adds a small space */}
+            <p>&nbsp;</p> {/* Adds a small space */}
+            <p>&nbsp;</p> {/* Adds a small space */}
+            <p>&nbsp;</p> {/* Adds a small space */}
+            <p>&nbsp;</p> {/* Adds a small space */}
+            <p>&nbsp;</p> {/* Adds a small space */}
+            <p>&nbsp;</p> {/* Adds a small space */}
+            <p>&nbsp;</p> {/* Adds a small space */}
+            <p>&nbsp;</p> {/* Adds a small space */}
+            <p>Parts: {labelsParts.join(", ")}</p>
+          </div>
         </div>
         <div className="lowerContainerRight">
           <div className="lowerContainerLeftDown">

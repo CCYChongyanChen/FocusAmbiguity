@@ -91,18 +91,18 @@ const InteractiveQALanding: React.FC<InteractiveQALandingProps> = ({
 
         {/* <div className="submitButtonContainer">{submitButton()}</div> */}
       </div>
-      <div className="subsection subsection2 hide">
+      {/* <div className="subsection subsection2 hide">
         <div className="questionBox">
           <p className="question hide">
             Step 2: Please refer to the interactive canvas on the left.{" "}
           </p>
-        </div>
-        <div className="questionBox questionBoxPart2">
+        </div> */}
+      {/* <div className="questionBox questionBoxPart2">
           <p className="question hide bold">
             Step 1 have not finished, wait until finishing Step 1 to continue!
           </p>
-        </div>
-      </div>
+        </div>*/}
+      {/* </div> */}
     </div>
   );
 };

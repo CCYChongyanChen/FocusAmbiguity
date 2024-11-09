@@ -62,7 +62,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
             control={
               <Radio
                 checked={true}
-                sx={{ fontSize: "clamp(4px, 1vh, 14px)" }}
+                sx={{ fontSize: "clamp(4px, 1.5vh, 15px)" }}
               />
             }
             label={labelValue}
@@ -70,7 +70,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
             onChange={(e) => formHandler(e, index)}
             sx={{
               "& .MuiFormControlLabel-label": {
-                fontSize: "clamp(4px, 1.5vh, 14px)", // Responsive font size for FormControlLabel
+                fontSize: "clamp(4px, 1.5vh, 15px)", // Responsive font size for FormControlLabel
                 color: labelColor,
               },
               "&.Mui-disabled .MuiFormControlLabel-label": {
@@ -85,13 +85,13 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
       return (
         <div style={{ height: "5vh" }}>
           <FormControlLabel
-            control={<Radio sx={{ fontSize: "clamp(4px, 1.5vh, 14px)" }} />}
+            control={<Radio sx={{ fontSize: "clamp(4px, 1.5vh, 15px)" }} />}
             label={labelValue}
             key={index}
             onChange={(e) => formHandler(e, index)}
             sx={{
               "& .MuiFormControlLabel-label": {
-                fontSize: "clamp(4px, 1.5vh, 14px)", // Responsive font size for FormControlLabel
+                fontSize: "clamp(4px, 1.5vh, 15px)", // Responsive font size for FormControlLabel
               },
             }}
           />
@@ -111,7 +111,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
           }}
           size="small"
         >
-          <UndoIcon sx={{ fontSize: "clamp(4px, 1.5vh, 14px)" }} />
+          <UndoIcon sx={{ fontSize: "clamp(4px, 1.5vh, 15px)" }} />
         </IconButton>
       );
     } else {
@@ -120,7 +120,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
   }
 
   return (
-    <div style={{ display: "flex", alignItems: "center", height: "5vh" }}>
+    <div style={{ display: "flex", alignItems: "center", height: "6vh", width:"25vw" }}>
       {isEditing ? (
         <TextField
           value={inputValue}
@@ -129,7 +129,7 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
           variant="outlined"
           sx={{
             "& .MuiInputBase-input": {
-              fontSize: "clamp(4px, 1.5vh, 14px)", // Responsive font size for TextField input
+              fontSize: "clamp(4px, 1.5vh, 15px)", // Responsive font size for TextField input
             },
           }}
           fullWidth
@@ -139,9 +139,9 @@ const EditableFormControlLabel: React.FC<EditableFormControlLabelProps> = ({
       )}
       <IconButton onClick={handleEditClick} size="small">
         {isEditing ? (
-          <CheckIcon sx={{ fontSize: "clamp(4px, 1.5vh, 14px)" }} />
+          <CheckIcon sx={{ fontSize: "clamp(4px, 1.5vh, 15px)" }} />
         ) : (
-          <EditIcon sx={{ fontSize: "clamp(4px, 1.5vh, 14px)" }} />
+          <EditIcon sx={{ fontSize: "clamp(4px, 1.5vh, 15px)" }} />
         )}
       </IconButton>
 

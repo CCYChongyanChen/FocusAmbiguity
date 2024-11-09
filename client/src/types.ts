@@ -39,6 +39,7 @@ export type InteractiveSVGProps = {
   parentFetch: () => void;
   updated: boolean;
   isAmbiguous: boolean;
+  selectedQuestion: number[];
 };
 
 export type InteractiveQAProps = {

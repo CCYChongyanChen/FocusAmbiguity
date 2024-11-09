@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import "../Home.css"; // Importing the CSS
 import "./InteractiveSVG.css"; // Importing the CSS
 import { AmbData, InteractiveSVGProps } from "../../types";
-import InteractiveSVGLanding from "./InteractiveSVGLanding";
 import InteractiveSVGUpdated from "./InteractiveSVGUpdated";
 
 const InteractiveSVG: React.FC<InteractiveSVGProps> = ({
@@ -10,6 +9,7 @@ const InteractiveSVG: React.FC<InteractiveSVGProps> = ({
   parentFetch,
   updated,
   isAmbiguous,
+  selectedQuestion,
 }) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [hasUpdates, setHasUpdates] = useState<boolean>(false);
@@ -48,8 +48,9 @@ const InteractiveSVG: React.FC<InteractiveSVGProps> = ({
     <InteractiveSVGUpdated
       id={id}
       parentFetch={fetchQuestions}
-      updated={false}
+      updated={hasUpdates}
       isAmbiguous={isAmbiguous}
+      selectedQuestion={selectedQuestion}
     />
   );
 };

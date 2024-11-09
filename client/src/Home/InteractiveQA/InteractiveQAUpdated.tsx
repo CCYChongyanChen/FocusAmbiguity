@@ -118,7 +118,7 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
           </Button>
         </div> */}
       </div>
-      <div className="subsection subsection2">
+      {/* <div className="subsection subsection2">
         <div className="questionBox">
           <p className="question">
             Step 2: Please refer to the interactive canvas on the left.{" "}
@@ -146,8 +146,8 @@ const InteractiveQAUpdated: React.FC<InteractiveLabelingProps> = ({
             page={questionIndex}
             onChange={handleChange}
           />
-        </div>
-      </div>
+        </div> */}
+      {/* </div> */}
     </div>
   );
 };

@@ -5,7 +5,7 @@
 }
 
 .subsection1 {
-  height: 49vh;
+  height: 70vh;
   width: 100%;
 }
 
@@ -53,7 +53,7 @@ p.bold {
   margin-left: 2%;
   justify-content: flex-start;
   align-items: flex-start;
-  font-size: clamp(4px, 1.5vh, 16px);
+  font-size: clamp(4px, 1.5vh, 20px);
   /* Responsive font size for answerBox */
 }
 
@@ -73,9 +73,21 @@ p.bold {
   /* Responsive font size for blue question text */
 }
 
+.question-blue-L {
+  color: #228B22;
+  font-size: clamp(16px, 2.5vh, 20px);
+  /* Responsive font size for blue question text */
+}
+
 .question-red {
   color: #F08080;
   font-size: clamp(15px, 2vh, 16px);
+  /* Responsive font size for blue question text */
+}
+
+.question-red-L {
+  color: #F08080;
+  font-size: clamp(16px, 2vh, 20px);
   /* Responsive font size for blue question text */
 }
 

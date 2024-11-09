@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import "../Home.css"; // Importing the CSS
 import "./InteractiveSVG.css"; // Importing the CSS
+import "../InteractiveQA/InteractiveQA.css"; // Importing the CSS
 import * as d3 from "d3";
 import { AmbData, InteractiveSVGProps } from "../../types";
 import { putSelectedObject, putSelectedParts, unSelectAll } from "./updateMask";
@@ -9,7 +10,9 @@ import SelectTools from "./SelectTool";
 const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
   id,
   parentFetch,
+  updated,
   isAmbiguous,
+  selectedQuestion,
 }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const svgRefParts = useRef<SVGSVGElement | null>(null);
@@ -52,6 +55,9 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
   );
 
   const [hideAllLabel, setHideAllLabel] = React.useState<boolean>(false);
+
+  const [questions, setQuestions] = React.useState<string[]>([]);
+  // const [selectedQuestion, setSelectedQuestion] = React.useState<number[]>([]);
 
   // const [selectedObjectPolygon, setSelectedObjectPolygon] = React.useState<
   //   d3.Selection<SVGPolygonElement, unknown, null, undefined>[]
@@ -131,6 +137,8 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
           setObjectsPolygon(data.objects_polygons);
           setObjectsClass(data.objects_labels);
           setPartsClass(data.parts_labels);
+          setQuestions(data.questions);
+          // setSelectedQuestion(data.selected_questions);
         }
         // console.log("Selected parts:", selectedParts);
         // console.log("Selected objects:", selectedObjects);
@@ -144,7 +152,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
   useEffect(() => {
     fetchQuestions(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id, imageURL, isAmbiguous]);
+  }, [id, imageURL, isAmbiguous, selectedQuestion, updated]);
 
   // useEffect(() => {
   //   const handleKeyPress = (event: KeyboardEvent) => {
@@ -192,7 +200,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
     confirmSelections();
     fetchQuestions(id);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedPolygonIndex, selectedObjectPolygonIndex]);
+  }, [selectedPolygonIndex, selectedObjectPolygonIndex, updated]);
 
   useEffect(() => {
     if (
@@ -423,7 +431,7 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
             .attr("y", cy)
             .text(partsClass[parts.groupIndex])
             .attr("text-anchor", "middle")
-            .attr("font-size", "1.5vh")
+            .attr("font-size", "1.25vw")
             .attr("fill", "white")
             .attr("font-weight", "medium");
         }
@@ -645,12 +653,23 @@ const InteractiveSVGUpdated: React.FC<InteractiveSVGProps> = ({
           });
         }}
       />
-      <div className="section1">
-        <div className="section sectionsvg">
-          <svg ref={svgRef}></svg>
+      <div className="section1Wrapper">
+        <div className="section3">
+          <span
+            className={`question ${
+              isAmbiguous ? "question-red-L" : "question-blue-L"
+            }`}
+          >
+            {questions[selectedQuestion[0]]}
+          </span>
         </div>
-        <div className="section sectionsvg">
-          <svg ref={svgRefParts}></svg>
+        <div className="section1">
+          <div className="section sectionsvg">
+            <svg ref={svgRef}></svg>
+          </div>
+          <div className="section sectionsvg">
+            <svg ref={svgRefParts}></svg>
+          </div>
         </div>
       </div>
     </div>
